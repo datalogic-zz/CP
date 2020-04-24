@@ -1,0 +1,86 @@
+// Function for unique IDs for all text elements
+function assignUniqueIDs() {
+    var texts = document.getElementsByClassName("label hide");
+
+    for (var i = 0; i < texts.length; i++) {
+        var text = texts[i]
+        text.setAttribute("uniqueID", String(i));
+    }
+}
+
+assignUniqueIDs();
+
+--------------------------------------------------------------------------------
+
+
+// Function for simulating clicks on circle nodes
+function simulateClick(elem /* Must be the element, not d3 selection */ ) {
+    var evt = document.createEvent("MouseEvents");
+    evt.initMouseEvent(
+        "click", /* type */
+        true, /* canBubble */
+        true, /* cancelable */
+        window, /* view */
+        0, /* detail */
+        0, /* screenX */
+        0, /* screenY */
+        0, /* clientX */
+        0, /* clientY */
+        false, /* ctrlKey */
+        false, /* altKey */
+        false, /* shiftKey */
+        false, /* metaKey */
+        0, /* button */
+        null); /* relatedTarget */
+    elem.dispatchEvent(evt);
+}
+
+// simulateClick($("circle.node")[2345]);
+
+
+
+
+--------------------------------------------------------------------------------
+// Function for clicking from the google console...
+
+jQuery.fn.d3Click = function () {
+  this.each(function (i, e) {
+    var evt = new MouseEvent("click");
+    e.dispatchEvent(evt);
+  });
+};
+
+--------------------------------------------------------------------------------
+
+// Function for wrapping text in the circles -- not used
+function wrap(text, width) {
+    text.each(function() {
+        var text = d3.select(this),
+            words = text.text().split(/\s+/).reverse(),
+            word,
+            line = [],
+            lineNumber = 0,
+            lineHeight = 1, // ems
+            y = -10,
+            dy = 0;
+        tspan = text.text(null)
+            .append("tspan")
+            .attr("x", 0)
+            .attr("y", y)
+            .attr("dy", dy + "em");
+        while (word = words.pop()) {
+            line.push(word);
+            tspan.text(line.join(" "));
+            if (tspan.node().getComputedTextLength() > width) {
+                line.pop();
+                tspan.text(line.join(" "));
+                line = [word];
+                tspan = text.append("tspan")
+                    .attr("x", 0)
+                    .attr("y", y)
+                    .attr("dy", ++lineNumber * lineHeight + dy + "em")
+                    .text(word);
+            }
+        }
+    });
+}

@@ -1,0 +1,235 @@
+<html lang="en">
+<style>
+body {
+    font-family: sans-serif;
+    margin: 0px;
+}
+
+#titleContainer {
+    width: 100%;
+    background-color: lightgray;
+    border-top-left-radius: 13px;
+    border-top-right-radius: 13px;
+    z-index: 10;
+}
+
+#closeButton {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    cursor: pointer;
+    border-radius: 25px;
+    height: 20px;
+    width: 20px;
+    background-color: rgb(237, 108, 97);
+    text-align: center;
+}
+
+#closeButton:hover {
+    background-color: red;
+}
+
+button:focus {
+    outline: 0;
+}
+
+h1 {
+    padding-left: 25px;
+    padding-right: 22px;
+    text-align: center;
+    margin: 0px;
+    text-overflow: ellipsis;
+    /* Required for text-overflow to do anything */
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+span {
+    font-weight: bold;
+}
+
+p {
+    margin: 5px;
+    transition all: 1s;
+}
+
+p.temp.link {
+    color: #0000EE;
+}
+
+p.temp.p {
+    margin-left: 12px;
+    font-size: 16px;
+}
+
+p.temp.link:hover {
+    color: #0000EE;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+#dataContainer {
+    position: absolute;
+    top: 85px;
+    z-index: 5;
+}
+
+div.scrollmenu {
+    background-color: #333;
+    overflow: auto;
+    white-space: nowrap;
+}
+
+div.scrollmenu a {
+    display: inline-block;
+    color: white;
+    text-align: center;
+    padding: 14px;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+div.scrollmenu a:hover {
+    background-color: #777;
+}
+</style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+
+<body>
+    <div id="titleContainer">
+        <button id="closeButton" type="button" aria-label="Close" onclick="Close()">
+        </button>
+        <div class="scrollmenu">
+        </div>
+    </div>
+    <div id="dataContainer">
+    </div>
+</body>
+<script>
+// Here "addEventListener" is for standards-compliant web browsers and "attachEvent" is for IE Browsers.
+var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
+var eventer = window[eventMethod];
+
+var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
+
+var elementObj;
+var dataContainer = document.getElementById("dataContainer");
+// Listen to message from child IFrame window
+eventer(messageEvent, function(e) {
+    // Need to remove the fixed styling to make it work on safari
+    if (typeof(e.data) == "string" && e.data == "Change position style") {
+        document.getElementById("titleContainer").removeAttribute("style");
+        return;
+    }
+    // Needs to be delayed because having this fixed from the beginning
+    // makes the code not work
+    setTimeout(function() {
+        document.getElementById("titleContainer").setAttribute("style", "position: fixed;");
+    }, 1000);
+
+    // Remove any elements that are left over from before
+    $('.temp').remove();
+    // Remove any items from the scroll menu that are lingering
+    $('.scrollItem').remove();
+
+    elementObj = e.data;
+    var elementName = elementObj["Element Name"];
+
+    var titleContainer = document.getElementById("titleContainer");
+    var scrollBar = document.getElementsByClassName("scrollmenu")[0];
+
+    // Create the element name title first
+    var title = document.createElement("H1");
+    title.setAttribute("class", "temp");
+    title.setAttribute("style", "margin: 0px;")
+    title.innerHTML = elementName;
+    titleContainer.insertBefore(title, titleContainer.firstChild);
+
+    // List of what to exclude from the incoming data
+    // (ie. excluding uniqueID, Element Name, Post)
+    var excludeList = ["Element Name", "post", "uniqueID"];
+
+    var baseOrderFlag = true;
+    var usedList = []
+    for (var dataContext in elementObj) {
+        // This will ensure that the first data context will be the base
+        if (baseOrderFlag == true && dataContext.toUpperCase() == "BASE" && excludeList.includes(dataContext) == false) {
+            var link = document.createElement("A");
+            link.innerHTML = dataContext;
+            link.setAttribute("onclick", "selectDataContext(elementObj, this)");
+            link.setAttribute("class", "scrollItem");
+            link.setAttribute("dataContext", dataContext);
+            scrollBar.appendChild(link);
+            baseOrderFlag = false;
+        } else if (baseOrderFlag == false) {
+            // This will list out any other data contexts after the base element tab
+            for (var dataContext2 in elementObj)
+                if (dataContext2.toUpperCase() != "BASE" && usedList.includes(dataContext2) == false && excludeList.includes(dataContext2) == false) {
+                    var link = document.createElement("A");
+                    link.innerHTML = dataContext2;
+                    link.setAttribute("onclick", "selectDataContext(elementObj, this)");
+                    link.setAttribute("class", "scrollItem");
+                    link.setAttribute("dataContext", dataContext2);
+                    scrollBar.appendChild(link);
+                    baseOrderFlag = false;
+                    usedList.push(dataContext2);
+                }
+        }
+    }
+
+    // Click the first data context in the scroll menu
+    var firstScrollItem = document.getElementsByClassName("scrollItem")[0];
+    firstScrollItem.click();
+
+}, false);
+
+// The function for closing the bottom iframe via button
+function Close() {
+    window.parent.postMessage("Close iFrame", "*");
+}
+
+// The function used for selecting which data context to be
+// viewed in the element frame window
+function selectDataContext(json, x) {
+    // Remove any lingering text
+    $('.temp.p').remove();
+
+    // Hide the links
+    var links = document.getElementsByClassName("temp link");
+    for (var i = 0; i < links.length; i++) {
+        links[i].setAttribute("style", "display: none;");
+    }
+
+    var dataContext = x.getAttribute("dataContext");
+
+    // The order the meta data should follow
+    var objectClass = "Object Class";
+    var definition = "Beta Extract Element Definition";
+    var formMapping = "Form Mapping";
+    var exchanges = "Exchange Summary";
+    var managingPartner = "Beta Extract Proposed LOB Managing Partner"
+    var hcdrmName = "Beta Extract Proposed HC Data Reference Model (HCDRM) Code";
+    var exampleValue = "Example Value";
+    var opmStdMapping = "OPM Standards Mapping";
+    var owner = "Proposed Steward";
+    var sorn = "SORN";
+
+    var propertyOrderArr = [objectClass, definition, formMapping, hcdrmName, exchanges,
+        exampleValue, managingPartner, opmStdMapping, owner, sorn
+    ];
+
+    // Create the listing for the element's meta data
+    for (var i = 0; i < propertyOrderArr.length; i++) {
+        for (var property in json[dataContext]) {
+            if (propertyOrderArr[i] == property) {
+                var p = document.createElement("P");
+                p.innerHTML = "<span>" + property + ": </span>" + json[dataContext][property];
+                p.setAttribute("class", "temp p");
+                dataContainer.appendChild(p);
+            }
+        }
+    }
+}
+</script>
+
+</html>

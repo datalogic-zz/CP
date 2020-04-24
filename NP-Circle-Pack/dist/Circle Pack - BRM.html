@@ -1,0 +1,3231 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+body {
+    margin: 0px;
+}
+
+.node {
+    cursor: pointer;
+}
+
+.node:hover {
+    stroke: #000;
+    stroke-width: 1.5px;
+}
+
+.node--leaf {
+    fill: darkgray;
+    /*fill: rgb(95, 118, 144);*/
+    transition all: 1s;
+}
+
+.label {
+    font: 32px "Helvetica Neue";
+    text-anchor: middle;
+    text-shadow: 0 1px 0 black, 1px 0 0 black, -1px 0 0 black, 0 -1px 0 black;
+    fill: white;
+}
+
+text.label:active {
+    pointer-events: none;
+}
+
+.circle {
+    border: 100px;
+}
+
+circle.node.node--leaf {
+    pointer-events: none;
+}
+
+text.label:hover {
+    font-size: 25px;
+    /*transition: 1s;*/
+}
+</style>
+<svg width="800" height="800"></svg>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+<script>
+// Check if browser is Internet Explorer 6-11
+var isIE = /*@cc_on!@*/ false || !!document.documentMode;
+// Edge 20+
+var isEdge = !isIE && !!window.StyleMedia;
+// Break out of the script if IE is detected
+if (isIE == true || isEdge == true) {
+    alert("JavaScript is not fully supported on internet explorer," +
+        " please another browser such as; Chrome, FireFox, Safari, etc.")
+    throw new Error("Internet Explorer detected!");
+}
+
+
+var svg = d3.select("svg"),
+    margin = 1,
+    diameter = +svg.attr("width"),
+    g = svg.append("g").attr("transform", "translate(" + diameter / 2 + "," + diameter / 2 + ")");
+// 
+var color = d3.scaleLinear()
+    .domain([-1, 5])
+    .range(["hsl(152,80%,100%)", "hsl(228,20%,40%)"])
+    .interpolate(d3.interpolateHcl);
+
+var pack = d3.pack()
+    .size([diameter - margin, diameter - margin])
+    .padding(1);
+
+var obj = 
+{
+    "name": "Law",
+    "visualName": "Law",
+    "legendName": "HCBRM",
+    "uniqueID": "0",
+    "children": [{
+        "name": "Families First Coronavirus Response Act (FFCRA)",
+        "visualName": "Families First Coronavirus Response Act (FFCRA)",
+        "legendName": "HCBRM : FFCRA",
+        "uniqueID": "1",
+        "children": [{
+            "name": "Division C - Emergency and Medical Leave Expansion Act",
+            "visualName": "Division C - Emergency and Medical Leave Expansion Act",
+            "legendName": "HCBRM : FFCRA : EFMLEA",
+            "uniqueID": "2",
+            "children": [{
+                "name": "Section 3102",
+                "visualName": "Section 3102 Employee Eligibility and Employer Requirements",
+                "legendName": "HCBRM : FFCRA : EFMLEA : Section 3102",
+                "uniqueID": "3",
+                "children": [{
+                    "name": "§826.10(a) General",
+                    "visualName": "§826.10(a) Definitions",
+                    "legendName": "HCBRM : FFCRA : EFMLEA : Section 3102 : §826.10(a)",
+                    "uniqueID": "4",
+                    "children": [{
+                        "name": "Child Care Provider",
+                        "visualName": "1: Child Care Provider",
+                        "size": "36",
+                        "elementChecker": "true",
+                        "idNumber": "ID:361",
+                        "uniqueID": "5"
+                    }, {
+                        "name": "Commerce",
+                        "visualName": "2: Commerce",
+                        "size": "41",
+                        "elementChecker": "true",
+                        "idNumber": "ID:363",
+                        "uniqueID": "6"
+                    }, {
+                        "name": "COVID-19",
+                        "visualName": "3: COVID-19",
+                        "size": "56",
+                        "elementChecker": "true",
+                        "idNumber": "ID:526",
+                        "uniqueID": "7"
+                    }]
+                }, {
+                    "name": "Time",
+                    "visualName": "Time",
+                    "legendName": "HCBRM : FFCRA : FFCRA Management : Recruitment Strategy Development : Time",
+                    "uniqueID": "8",
+                    "children": [{
+                        "name": "ID:575",
+                        "visualName": "1: Time Calendar Date",
+                        "size": "18",
+                        "elementChecker": "true",
+                        "idNumber": "ID:575",
+                        "uniqueID": "9"
+                    }]
+                }]
+            }, {
+                "name": "Section 3103",
+                "visualName": "Section 3103 Multiemployer Bargaining Agreements",
+                "legendName": "HCBRM : FFCRA : EFMLEA : Section 3103",
+                "uniqueID": "10",
+                "children": [{
+                    "name": "Service",
+                    "visualName": "Service",
+                    "legendName": "HCBRM : FFCRA : FFCRA Management : Recruitment Plan Development : Service",
+                    "uniqueID": "11",
+                    "children": [{
+                        "name": "ID:361",
+                        "visualName": "1: Military Service Veteran Status Code",
+                        "size": "36",
+                        "elementChecker": "true",
+                        "idNumber": "ID:361",
+                        "uniqueID": "12"
+                    }, {
+                        "name": "ID:363",
+                        "visualName": "2: Military Service Veterans Preference Code",
+                        "size": "41",
+                        "elementChecker": "true",
+                        "idNumber": "ID:363",
+                        "uniqueID": "13"
+                    }, {
+                        "name": "ID:526",
+                        "visualName": "3: Service Computation Date for Reduction in Force Purposes",
+                        "size": "56",
+                        "elementChecker": "true",
+                        "idNumber": "ID:526",
+                        "uniqueID": "14"
+                    }]
+                }, {
+                    "name": "Time",
+                    "visualName": "Time",
+                    "legendName": "HCBRM : FFCRA : FFCRA Management : Recruitment Plan Development : Time",
+                    "uniqueID": "15",
+                    "children": [{
+                        "name": "ID:575",
+                        "visualName": "1: Time Calendar Date",
+                        "size": "18",
+                        "elementChecker": "true",
+                        "idNumber": "ID:575",
+                        "uniqueID": "16"
+                    }]
+                }]
+            }, {
+                "name": "Section 3104",
+                "visualName": "Section 3104 Employer < 50 Employees Eligibility Exception",
+                "legendName": "HCBRM : FFCRA : EFMLEA : Section 3104",
+                "uniqueID": "17",
+                "children": [{
+                    "name": "Education",
+                    "visualName": "Education",
+                    "legendName": "HCBRM : FFCRA : FFCRA Management : Position Classification : Education",
+                    "uniqueID": "18",
+                    "children": [{
+                        "name": "ID:78",
+                        "visualName": "1: Education Degree or Certificate Attained Calendar Year",
+                        "size": "54",
+                        "elementChecker": "true",
+                        "idNumber": "ID:78",
+                        "uniqueID": "19"
+                    }, {
+                        "name": "ID:79",
+                        "visualName": "2: Education Level Code",
+                        "size": "20",
+                        "elementChecker": "true",
+                        "idNumber": "ID:79",
+                        "uniqueID": "20"
+                    }]
+                }, {
+                    "name": "Functional",
+                    "visualName": "Functional",
+                    "legendName": "HCBRM : FFCRA : FFCRA Management : Position Classification : Functional",
+                    "uniqueID": "21",
+                    "children": [{
+                        "name": "ID:86",
+                        "visualName": "1: Functional Classification Code",
+                        "size": "30",
+                        "elementChecker": "true",
+                        "idNumber": "ID:86",
+                        "uniqueID": "22"
+                    }]
+                }, {
+                    "name": "Occupational",
+                    "visualName": "Occupational",
+                    "legendName": "HCBRM : FFCRA : FFCRA Management : Position Classification : Occupational",
+                    "uniqueID": "23",
+                    "children": [{
+                        "name": "ID:364",
+                        "visualName": "1: Occupational Category Code",
+                        "size": "26",
+                        "elementChecker": "true",
+                        "idNumber": "ID:364",
+                        "uniqueID": "24"
+                    }, {
+                        "name": "ID:365",
+                        "visualName": "2: Occupational Series Text",
+                        "size": "24",
+                        "elementChecker": "true",
+                        "idNumber": "ID:365",
+                        "uniqueID": "25"
+                    }]
+                }, {
+                    "name": "Position",
+                    "visualName": "Position",
+                    "legendName": "HCBRM : FFCRA : FFCRA Management : Position Classification : Position",
+                    "uniqueID": "26",
+                    "children": [{
+                        "name": "ID:471",
+                        "visualName": "1: Position Grade, Level, Class, Rank, or Pay Band Code",
+                        "size": "52",
+                        "elementChecker": "true",
+                        "idNumber": "ID:471",
+                        "uniqueID": "27"
+                    }, {
+                        "name": "ID:498",
+                        "visualName": "2: Position Official Title",
+                        "size": "23",
+                        "elementChecker": "true",
+                        "idNumber": "ID:498",
+                        "uniqueID": "28"
+                    }, {
+                        "name": "ID:499",
+                        "visualName": "3: Position Service Designator",
+                        "size": "27",
+                        "elementChecker": "true",
+                        "idNumber": "ID:499",
+                        "uniqueID": "29"
+                    }]
+                }, {
+                    "name": "Position Management",
+                    "visualName": "Position Management",
+                    "legendName": "HCBRM : FFCRA : FFCRA Management : Position Classification : Position Management",
+                    "uniqueID": "30",
+                    "children": [{
+                        "name": "ID:472",
+                        "visualName": "1: Position Management Alternate Work Schedule Code",
+                        "size": "48",
+                        "elementChecker": "true",
+                        "idNumber": "ID:472",
+                        "uniqueID": "31"
+                    }, {
+                        "name": "ID:473",
+                        "visualName": "2: Position Management Annuitant Code",
+                        "size": "34",
+                        "elementChecker": "true",
+                        "idNumber": "ID:473",
+                        "uniqueID": "32"
+                    }, {
+                        "name": "ID:474",
+                        "visualName": "3: Position Management Appriopriate Code",
+                        "size": "37",
+                        "elementChecker": "true",
+                        "idNumber": "ID:474",
+                        "uniqueID": "33"
+                    }, {
+                        "name": "ID:475",
+                        "visualName": "4: Position Management Appropriation Code",
+                        "size": "38",
+                        "elementChecker": "true",
+                        "idNumber": "ID:475",
+                        "uniqueID": "34"
+                    }, {
+                        "name": "ID:476",
+                        "visualName": "5: Position Management Bargaining Unit Text",
+                        "size": "40",
+                        "elementChecker": "true",
+                        "idNumber": "ID:476",
+                        "uniqueID": "35"
+                    }, {
+                        "name": "ID:477",
+                        "visualName": "6: Position Management Functional Classification Code",
+                        "size": "50",
+                        "elementChecker": "true",
+                        "idNumber": "ID:477",
+                        "uniqueID": "36"
+                    }, {
+                        "name": "ID:478",
+                        "visualName": "7: Position Management Grade Code",
+                        "size": "30",
+                        "elementChecker": "true",
+                        "idNumber": "ID:478",
+                        "uniqueID": "37"
+                    }, {
+                        "name": "ID:479",
+                        "visualName": "8: Position Management Grade, Level, Class, Rank, or Pay Band Code",
+                        "size": "63",
+                        "elementChecker": "true",
+                        "idNumber": "ID:479",
+                        "uniqueID": "38"
+                    }, {
+                        "name": "ID:480",
+                        "visualName": "9: Position Management Grade/Band Code",
+                        "size": "35",
+                        "elementChecker": "true",
+                        "idNumber": "ID:480",
+                        "uniqueID": "39"
+                    }, {
+                        "name": "ID:481",
+                        "visualName": "10: Position Management Occupation Series Text",
+                        "size": "42",
+                        "elementChecker": "true",
+                        "idNumber": "ID:481",
+                        "uniqueID": "40"
+                    }, {
+                        "name": "ID:482",
+                        "visualName": "11: Position Management Occupational Category Code",
+                        "size": "46",
+                        "elementChecker": "true",
+                        "idNumber": "ID:482",
+                        "uniqueID": "41"
+                    }, {
+                        "name": "ID:483",
+                        "visualName": "12: Position Management Occupational Series Text",
+                        "size": "44",
+                        "elementChecker": "true",
+                        "idNumber": "ID:483",
+                        "uniqueID": "42"
+                    }, {
+                        "name": "ID:484",
+                        "visualName": "13: Position Management Occupied Position Code",
+                        "size": "42",
+                        "elementChecker": "true",
+                        "idNumber": "ID:484",
+                        "uniqueID": "43"
+                    }, {
+                        "name": "ID:485",
+                        "visualName": "14: Position Management Organization Code",
+                        "size": "37",
+                        "elementChecker": "true",
+                        "idNumber": "ID:485",
+                        "uniqueID": "44"
+                    }, {
+                        "name": "ID:486",
+                        "visualName": "15: Position Management Organizational Code",
+                        "size": "39",
+                        "elementChecker": "true",
+                        "idNumber": "ID:486",
+                        "uniqueID": "45"
+                    }, {
+                        "name": "ID:487",
+                        "visualName": "16: Position Management Position Title Description Text",
+                        "size": "51",
+                        "elementChecker": "true",
+                        "idNumber": "ID:487",
+                        "uniqueID": "46"
+                    }, {
+                        "name": "ID:488",
+                        "visualName": "17: Position Management Service Computation Date",
+                        "size": "44",
+                        "elementChecker": "true",
+                        "idNumber": "ID:488",
+                        "uniqueID": "47"
+                    }, {
+                        "name": "ID:489",
+                        "visualName": "18: Position Management Start Date",
+                        "size": "30",
+                        "elementChecker": "true",
+                        "idNumber": "ID:489",
+                        "uniqueID": "48"
+                    }, {
+                        "name": "ID:490",
+                        "visualName": "19: Position Management Status Text",
+                        "size": "31",
+                        "elementChecker": "true",
+                        "idNumber": "ID:490",
+                        "uniqueID": "49"
+                    }, {
+                        "name": "ID:491",
+                        "visualName": "20: Position Management Step Code",
+                        "size": "29",
+                        "elementChecker": "true",
+                        "idNumber": "ID:491",
+                        "uniqueID": "50"
+                    }, {
+                        "name": "ID:492",
+                        "visualName": "21: Position Management Step or Rate Code",
+                        "size": "37",
+                        "elementChecker": "true",
+                        "idNumber": "ID:492",
+                        "uniqueID": "51"
+                    }, {
+                        "name": "ID:493",
+                        "visualName": "22: Position Management Supervisory Status Code",
+                        "size": "43",
+                        "elementChecker": "true",
+                        "idNumber": "ID:493",
+                        "uniqueID": "52"
+                    }, {
+                        "name": "ID:494",
+                        "visualName": "23: Position Management Tenure Code",
+                        "size": "31",
+                        "elementChecker": "true",
+                        "idNumber": "ID:494",
+                        "uniqueID": "53"
+                    }, {
+                        "name": "ID:495",
+                        "visualName": "24: Position Management Type Code",
+                        "size": "29",
+                        "elementChecker": "true",
+                        "idNumber": "ID:495",
+                        "uniqueID": "54"
+                    }, {
+                        "name": "ID:496",
+                        "visualName": "25: Position Management Weeks Worked Number",
+                        "size": "39",
+                        "elementChecker": "true",
+                        "idNumber": "ID:496",
+                        "uniqueID": "55"
+                    }, {
+                        "name": "ID:497",
+                        "visualName": "26: Position Management Work Schedule Code",
+                        "size": "38",
+                        "elementChecker": "true",
+                        "idNumber": "ID:497",
+                        "uniqueID": "56"
+                    }]
+                }, {
+                    "name": "Supervisory",
+                    "visualName": "Supervisory",
+                    "legendName": "HCBRM : FFCRA : FFCRA Management : Position Classification : Supervisory",
+                    "uniqueID": "57",
+                    "children": [{
+                        "name": "ID:542",
+                        "visualName": "1: Supervisory Status Code",
+                        "size": "23",
+                        "elementChecker": "true",
+                        "idNumber": "ID:542",
+                        "uniqueID": "58"
+                    }]
+                }, {
+                    "name": "Time",
+                    "visualName": "Time",
+                    "legendName": "HCBRM : FFCRA : FFCRA Management : Position Classification : Time",
+                    "uniqueID": "59",
+                    "children": [{
+                        "name": "ID:575",
+                        "visualName": "1: Time Calendar Date",
+                        "size": "18",
+                        "elementChecker": "true",
+                        "idNumber": "ID:575",
+                        "uniqueID": "60"
+                    }]
+                }]
+            }, {
+                "name": "Section 3105",
+                "visualName": "Section 3105 Health Care Provider Eligibility Exception",
+                "legendName": "HCBRM : FFCRA : EFMLEA : Section 3105",
+                "uniqueID": "61",
+                "children": [{
+                    "name": "Education",
+                    "visualName": "Education",
+                    "legendName": "HCBRM : FFCRA : FFCRA Management : Job Analysis : Education",
+                    "uniqueID": "62",
+                    "children": [{
+                        "name": "ID:78",
+                        "visualName": "1: Education Degree or Certificate Attained Calendar Year",
+                        "size": "54",
+                        "elementChecker": "true",
+                        "idNumber": "ID:78",
+                        "uniqueID": "63"
+                    }, {
+                        "name": "ID:79",
+                        "visualName": "2: Education Level Code",
+                        "size": "20",
+                        "elementChecker": "true",
+                        "idNumber": "ID:79",
+                        "uniqueID": "64"
+                    }]
+                }, {
+                    "name": "Occupational",
+                    "visualName": "Occupational",
+                    "legendName": "HCBRM : FFCRA : FFCRA Management : Job Analysis : Occupational",
+                    "uniqueID": "65",
+                    "children": [{
+                        "name": "ID:364",
+                        "visualName": "1: Occupational Category Code",
+                        "size": "26",
+                        "elementChecker": "true",
+                        "idNumber": "ID:364",
+                        "uniqueID": "66"
+                    }, {
+                        "name": "ID:365",
+                        "visualName": "2: Occupational Series Text",
+                        "size": "24",
+                        "elementChecker": "true",
+                        "idNumber": "ID:365",
+                        "uniqueID": "67"
+                    }]
+                }, {
+                    "name": "Position",
+                    "visualName": "Position",
+                    "legendName": "HCBRM : FFCRA : FFCRA Management : Job Analysis : Position",
+                    "uniqueID": "68",
+                    "children": [{
+                        "name": "ID:471",
+                        "visualName": "1: Position Grade, Level, Class, Rank, or Pay Band Code",
+                        "size": "52",
+                        "elementChecker": "true",
+                        "idNumber": "ID:471",
+                        "uniqueID": "69"
+                    }, {
+                        "name": "ID:498",
+                        "visualName": "2: Position Official Title",
+                        "size": "23",
+                        "elementChecker": "true",
+                        "idNumber": "ID:498",
+                        "uniqueID": "70"
+                    }, {
+                        "name": "ID:499",
+                        "visualName": "3: Position Service Designator",
+                        "size": "27",
+                        "elementChecker": "true",
+                        "idNumber": "ID:499",
+                        "uniqueID": "71"
+                    }]
+                }, {
+                    "name": "Position Management",
+                    "visualName": "Position Management",
+                    "legendName": "HCBRM : FFCRA : FFCRA Management : Job Analysis : Position Management",
+                    "uniqueID": "72",
+                    "children": [{
+                        "name": "ID:472",
+                        "visualName": "1: Position Management Alternate Work Schedule Code",
+                        "size": "48",
+                        "elementChecker": "true",
+                        "idNumber": "ID:472",
+                        "uniqueID": "73"
+                    }, {
+                        "name": "ID:473",
+                        "visualName": "2: Position Management Annuitant Code",
+                        "size": "34",
+                        "elementChecker": "true",
+                        "idNumber": "ID:473",
+                        "uniqueID": "74"
+                    }, {
+                        "name": "ID:474",
+                        "visualName": "3: Position Management Appriopriate Code",
+                        "size": "37",
+                        "elementChecker": "true",
+                        "idNumber": "ID:474",
+                        "uniqueID": "75"
+                    }, {
+                        "name": "ID:475",
+                        "visualName": "4: Position Management Appropriation Code",
+                        "size": "38",
+                        "elementChecker": "true",
+                        "idNumber": "ID:475",
+                        "uniqueID": "76"
+                    }, {
+                        "name": "ID:476",
+                        "visualName": "5: Position Management Bargaining Unit Text",
+                        "size": "40",
+                        "elementChecker": "true",
+                        "idNumber": "ID:476",
+                        "uniqueID": "77"
+                    }, {
+                        "name": "ID:477",
+                        "visualName": "6: Position Management Functional Classification Code",
+                        "size": "50",
+                        "elementChecker": "true",
+                        "idNumber": "ID:477",
+                        "uniqueID": "78"
+                    }, {
+                        "name": "ID:478",
+                        "visualName": "7: Position Management Grade Code",
+                        "size": "30",
+                        "elementChecker": "true",
+                        "idNumber": "ID:478",
+                        "uniqueID": "79"
+                    }, {
+                        "name": "ID:479",
+                        "visualName": "8: Position Management Grade, Level, Class, Rank, or Pay Band Code",
+                        "size": "63",
+                        "elementChecker": "true",
+                        "idNumber": "ID:479",
+                        "uniqueID": "80"
+                    }, {
+                        "name": "ID:480",
+                        "visualName": "9: Position Management Grade/Band Code",
+                        "size": "35",
+                        "elementChecker": "true",
+                        "idNumber": "ID:480",
+                        "uniqueID": "81"
+                    }, {
+                        "name": "ID:481",
+                        "visualName": "10: Position Management Occupation Series Text",
+                        "size": "42",
+                        "elementChecker": "true",
+                        "idNumber": "ID:481",
+                        "uniqueID": "82"
+                    }, {
+                        "name": "ID:482",
+                        "visualName": "11: Position Management Occupational Category Code",
+                        "size": "46",
+                        "elementChecker": "true",
+                        "idNumber": "ID:482",
+                        "uniqueID": "83"
+                    }, {
+                        "name": "ID:483",
+                        "visualName": "12: Position Management Occupational Series Text",
+                        "size": "44",
+                        "elementChecker": "true",
+                        "idNumber": "ID:483",
+                        "uniqueID": "84"
+                    }, {
+                        "name": "ID:484",
+                        "visualName": "13: Position Management Occupied Position Code",
+                        "size": "42",
+                        "elementChecker": "true",
+                        "idNumber": "ID:484",
+                        "uniqueID": "85"
+                    }, {
+                        "name": "ID:485",
+                        "visualName": "14: Position Management Organization Code",
+                        "size": "37",
+                        "elementChecker": "true",
+                        "idNumber": "ID:485",
+                        "uniqueID": "86"
+                    }, {
+                        "name": "ID:486",
+                        "visualName": "15: Position Management Organizational Code",
+                        "size": "39",
+                        "elementChecker": "true",
+                        "idNumber": "ID:486",
+                        "uniqueID": "87"
+                    }, {
+                        "name": "ID:487",
+                        "visualName": "16: Position Management Position Title Description Text",
+                        "size": "51",
+                        "elementChecker": "true",
+                        "idNumber": "ID:487",
+                        "uniqueID": "88"
+                    }, {
+                        "name": "ID:488",
+                        "visualName": "17: Position Management Service Computation Date",
+                        "size": "44",
+                        "elementChecker": "true",
+                        "idNumber": "ID:488",
+                        "uniqueID": "89"
+                    }, {
+                        "name": "ID:489",
+                        "visualName": "18: Position Management Start Date",
+                        "size": "30",
+                        "elementChecker": "true",
+                        "idNumber": "ID:489",
+                        "uniqueID": "90"
+                    }, {
+                        "name": "ID:490",
+                        "visualName": "19: Position Management Status Text",
+                        "size": "31",
+                        "elementChecker": "true",
+                        "idNumber": "ID:490",
+                        "uniqueID": "91"
+                    }, {
+                        "name": "ID:491",
+                        "visualName": "20: Position Management Step Code",
+                        "size": "29",
+                        "elementChecker": "true",
+                        "idNumber": "ID:491",
+                        "uniqueID": "92"
+                    }, {
+                        "name": "ID:492",
+                        "visualName": "21: Position Management Step or Rate Code",
+                        "size": "37",
+                        "elementChecker": "true",
+                        "idNumber": "ID:492",
+                        "uniqueID": "93"
+                    }, {
+                        "name": "ID:493",
+                        "visualName": "22: Position Management Supervisory Status Code",
+                        "size": "43",
+                        "elementChecker": "true",
+                        "idNumber": "ID:493",
+                        "uniqueID": "94"
+                    }, {
+                        "name": "ID:494",
+                        "visualName": "23: Position Management Tenure Code",
+                        "size": "31",
+                        "elementChecker": "true",
+                        "idNumber": "ID:494",
+                        "uniqueID": "95"
+                    }, {
+                        "name": "ID:495",
+                        "visualName": "24: Position Management Type Code",
+                        "size": "29",
+                        "elementChecker": "true",
+                        "idNumber": "ID:495",
+                        "uniqueID": "96"
+                    }, {
+                        "name": "ID:496",
+                        "visualName": "25: Position Management Weeks Worked Number",
+                        "size": "39",
+                        "elementChecker": "true",
+                        "idNumber": "ID:496",
+                        "uniqueID": "97"
+                    }, {
+                        "name": "ID:497",
+                        "visualName": "26: Position Management Work Schedule Code",
+                        "size": "38",
+                        "elementChecker": "true",
+                        "idNumber": "ID:497",
+                        "uniqueID": "98"
+                    }]
+                }, {
+                    "name": "Supervisory",
+                    "visualName": "Supervisory",
+                    "legendName": "HCBRM : FFCRA : FFCRA Management : Job Analysis : Supervisory",
+                    "uniqueID": "99",
+                    "children": [{
+                        "name": "ID:542",
+                        "visualName": "1: Supervisory Status Code",
+                        "size": "23",
+                        "elementChecker": "true",
+                        "idNumber": "ID:542",
+                        "uniqueID": "100"
+                    }]
+                }, {
+                    "name": "Time",
+                    "visualName": "Time",
+                    "legendName": "HCBRM : FFCRA : FFCRA Management : Job Analysis : Time",
+                    "uniqueID": "101",
+                    "children": [{
+                        "name": "ID:575",
+                        "visualName": "1: Time Calendar Date",
+                        "size": "18",
+                        "elementChecker": "true",
+                        "idNumber": "ID:575",
+                        "uniqueID": "102"
+                    }]
+                }]
+            }, {
+                "name": "Section 3106",
+                "visualName": "Section 3106 EFMLEA Effective Date",
+                "legendName": "HCBRM : FFCRA : EFMLEA : Section 3106",
+                "uniqueID": "103",
+                "children": [{
+                    "name": "§826.10(b) General",
+                    "visualName": "§826.10(b) Effective Period",
+                    "legendName": "HCBRM : FFCRA : EFMLEA : Section 3106 : §826.10(b)",
+                    "uniqueID": "104",
+                    "children": [{
+                        "name": "ID:78",
+                        "visualName": "1: Education Degree or Certificate Attained Calendar Year",
+                        "size": "54",
+                        "elementChecker": "true",
+                        "idNumber": "ID:78",
+                        "uniqueID": "105"
+                    }, {
+                        "name": "ID:79",
+                        "visualName": "2: Education Level Code",
+                        "size": "20",
+                        "elementChecker": "true",
+                        "idNumber": "ID:79",
+                        "uniqueID": "106"
+                    }]
+                }, {
+                    "name": "Time",
+                    "visualName": "Time",
+                    "legendName": "HCBRM : FFCRA : FFCRA Management : Assessment Tools Development and Evaluation : Time",
+                    "uniqueID": "107",
+                    "children": [{
+                        "name": "ID:575",
+                        "visualName": "1: Time Calendar Date",
+                        "size": "18",
+                        "elementChecker": "true",
+                        "idNumber": "ID:575",
+                        "uniqueID": "108"
+                    }]
+                }]
+            }]
+        }, {
+            "name": "Division E - Emergency Paid Sick Leave Act",
+            "visualName": "Division E - Emergency Paid Sick Leave Act",
+            "legendName": "HCBRM : FFCRA : EPSLA",
+            "uniqueID": "301",
+            "children": [{
+                "name": "Section 5102",
+                "visualName": "Section 5102 Scope and Eligibility Conditions",
+                "legendName": "HCBRM : FFCRA : EPSLA : Section 5102",
+                "uniqueID": "302",
+                "children": [{
+                    "name": "§826.10 General",
+                    "visualName": "§826.10(b) Effective Period",
+                    "legendName": "HCBRM : FFCRA : EPSLA : Section 5102 : §826.10(b)",
+                    "uniqueID": "303",
+                    "children": [{
+                        "name": "ID:3",
+                        "visualName": "1: Address City Name Text",
+                        "size": "22",
+                        "elementChecker": "true",
+                        "idNumber": "ID:3",
+                        "uniqueID": "304"
+                    }, {
+                        "name": "ID:4",
+                        "visualName": "2: Address Country Code",
+                        "size": "20",
+                        "elementChecker": "true",
+                        "idNumber": "ID:4",
+                        "uniqueID": "305"
+                    }, {
+                        "name": "ID:5",
+                        "visualName": "3: Address Foreign Postal Code",
+                        "size": "27",
+                        "elementChecker": "true",
+                        "idNumber": "ID:5",
+                        "uniqueID": "306"
+                    }, {
+                        "name": "ID:6",
+                        "visualName": "4: Address Foreign State/Province Code",
+                        "size": "35",
+                        "elementChecker": "true",
+                        "idNumber": "ID:6",
+                        "uniqueID": "307"
+                    }, {
+                        "name": "ID:7",
+                        "visualName": "5: Address Full Address Text",
+                        "size": "25",
+                        "elementChecker": "true",
+                        "idNumber": "ID:7",
+                        "uniqueID": "308"
+                    }, {
+                        "name": "ID:8",
+                        "visualName": "6: Address Full Text",
+                        "size": "17",
+                        "elementChecker": "true",
+                        "idNumber": "ID:8",
+                        "uniqueID": "309"
+                    }, {
+                        "name": "ID:9",
+                        "visualName": "7: Address Line Extension Text",
+                        "size": "27",
+                        "elementChecker": "true",
+                        "idNumber": "ID:9",
+                        "uniqueID": "310"
+                    }, {
+                        "name": "ID:10",
+                        "visualName": "8: Address Line Text",
+                        "size": "17",
+                        "elementChecker": "true",
+                        "idNumber": "ID:10",
+                        "uniqueID": "311"
+                    }, {
+                        "name": "ID:11",
+                        "visualName": "9: Address Postal Code",
+                        "size": "19",
+                        "elementChecker": "true",
+                        "idNumber": "ID:11",
+                        "uniqueID": "312"
+                    }, {
+                        "name": "ID:12",
+                        "visualName": "10: Address Postal Extension Code",
+                        "size": "29",
+                        "elementChecker": "true",
+                        "idNumber": "ID:12",
+                        "uniqueID": "313"
+                    }, {
+                        "name": "ID:13",
+                        "visualName": "11: Address State Code",
+                        "size": "18",
+                        "elementChecker": "true",
+                        "idNumber": "ID:13",
+                        "uniqueID": "314"
+                    }, {
+                        "name": "ID:14",
+                        "visualName": "12: Address State/Province Code",
+                        "size": "27",
+                        "elementChecker": "true",
+                        "idNumber": "ID:14",
+                        "uniqueID": "315"
+                    }, {
+                        "name": "ID:15",
+                        "visualName": "13: Address Type Container",
+                        "size": "22",
+                        "elementChecker": "true",
+                        "idNumber": "ID:15",
+                        "uniqueID": "316"
+                    }]
+                }, {
+                    "name": "Citizenship",
+                    "visualName": "Citizenship",
+                    "legendName": "HCBRM : FFCRA : Candidate Sourcing and Recruitment : Outreach and Recruitment : Citizenship",
+                    "uniqueID": "317",
+                    "children": [{
+                        "name": "ID:54",
+                        "visualName": "1: Country Citizenship Identification Indicator",
+                        "size": "44",
+                        "elementChecker": "true",
+                        "idNumber": "ID:54",
+                        "uniqueID": "318"
+                    }]
+                }, {
+                    "name": "Contact Information",
+                    "visualName": "Contact Information",
+                    "legendName": "HCBRM : FFCRA : Candidate Sourcing and Recruitment : Outreach and Recruitment : Contact Information",
+                    "uniqueID": "319",
+                    "children": [{
+                        "name": "ID:47",
+                        "visualName": "1: Contact Information Email Address Text",
+                        "size": "38",
+                        "elementChecker": "true",
+                        "idNumber": "ID:47",
+                        "uniqueID": "320"
+                    }, {
+                        "name": "ID:48",
+                        "visualName": "2: Contact Information Fax Number",
+                        "size": "30",
+                        "elementChecker": "true",
+                        "idNumber": "ID:48",
+                        "uniqueID": "321"
+                    }, {
+                        "name": "ID:49",
+                        "visualName": "3: Contact Information Phone Number",
+                        "size": "32",
+                        "elementChecker": "true",
+                        "idNumber": "ID:49",
+                        "uniqueID": "322"
+                    }, {
+                        "name": "ID:50",
+                        "visualName": "4: Contact Information Telephone Extension Number",
+                        "size": "46",
+                        "elementChecker": "true",
+                        "idNumber": "ID:50",
+                        "uniqueID": "323"
+                    }, {
+                        "name": "ID:51",
+                        "visualName": "5: Contact Information Telephone Number",
+                        "size": "36",
+                        "elementChecker": "true",
+                        "idNumber": "ID:51",
+                        "uniqueID": "324"
+                    }]
+                }, {
+                    "name": "E-mail",
+                    "visualName": "E-mail",
+                    "legendName": "HCBRM : FFCRA : Candidate Sourcing and Recruitment : Outreach and Recruitment : E-mail",
+                    "uniqueID": "325",
+                    "children": [{
+                        "name": "ID:77",
+                        "visualName": "1: E-mail Address Text",
+                        "size": "19",
+                        "elementChecker": "true",
+                        "idNumber": "ID:77",
+                        "uniqueID": "326"
+                    }]
+                }, {
+                    "name": "Education",
+                    "visualName": "Education",
+                    "legendName": "HCBRM : FFCRA : Candidate Sourcing and Recruitment : Outreach and Recruitment : Education",
+                    "uniqueID": "327",
+                    "children": [{
+                        "name": "ID:78",
+                        "visualName": "1: Education Degree or Certificate Attained Calendar Year",
+                        "size": "54",
+                        "elementChecker": "true",
+                        "idNumber": "ID:78",
+                        "uniqueID": "328"
+                    }, {
+                        "name": "ID:79",
+                        "visualName": "2: Education Level Code",
+                        "size": "20",
+                        "elementChecker": "true",
+                        "idNumber": "ID:79",
+                        "uniqueID": "329"
+                    }]
+                }, {
+                    "name": "Identification",
+                    "visualName": "Identification",
+                    "legendName": "HCBRM : FFCRA : Candidate Sourcing and Recruitment : Outreach and Recruitment : Identification",
+                    "uniqueID": "330",
+                    "children": [{
+                        "name": "ID:149",
+                        "visualName": "1: Identification Agent Code",
+                        "size": "25",
+                        "elementChecker": "true",
+                        "idNumber": "ID:149",
+                        "uniqueID": "331"
+                    }, {
+                        "name": "ID:150",
+                        "visualName": "2: Identification EHRI Identifier",
+                        "size": "30",
+                        "elementChecker": "true",
+                        "idNumber": "ID:150",
+                        "uniqueID": "332"
+                    }, {
+                        "name": "ID:151",
+                        "visualName": "3: Identification Employer Account Number",
+                        "size": "38",
+                        "elementChecker": "true",
+                        "idNumber": "ID:151",
+                        "uniqueID": "333"
+                    }, {
+                        "name": "ID:152",
+                        "visualName": "4: Identification Employer Identification Number",
+                        "size": "45",
+                        "elementChecker": "true",
+                        "idNumber": "ID:152",
+                        "uniqueID": "334"
+                    }, {
+                        "name": "ID:153",
+                        "visualName": "5: Identification Establishment Number",
+                        "size": "35",
+                        "elementChecker": "true",
+                        "idNumber": "ID:153",
+                        "uniqueID": "335"
+                    }, {
+                        "name": "ID:154",
+                        "visualName": "6: Identification Indicator Code",
+                        "size": "29",
+                        "elementChecker": "true",
+                        "idNumber": "ID:154",
+                        "uniqueID": "336"
+                    }, {
+                        "name": "ID:155",
+                        "visualName": "7: Identification Personnel Office Identifier",
+                        "size": "42",
+                        "elementChecker": "true",
+                        "idNumber": "ID:155",
+                        "uniqueID": "337"
+                    }, {
+                        "name": "ID:156",
+                        "visualName": "8: Identification Preparer Code",
+                        "size": "28",
+                        "elementChecker": "true",
+                        "idNumber": "ID:156",
+                        "uniqueID": "338"
+                    }, {
+                        "name": "ID:157",
+                        "visualName": "9: Identification Social Security Number",
+                        "size": "37",
+                        "elementChecker": "true",
+                        "idNumber": "ID:157",
+                        "uniqueID": "339"
+                    }, {
+                        "name": "ID:158",
+                        "visualName": "10: Identification Software Code",
+                        "size": "28",
+                        "elementChecker": "true",
+                        "idNumber": "ID:158",
+                        "uniqueID": "340"
+                    }, {
+                        "name": "ID:159",
+                        "visualName": "11: Identification Terminating Business Indicator",
+                        "size": "45",
+                        "elementChecker": "true",
+                        "idNumber": "ID:159",
+                        "uniqueID": "341"
+                    }, {
+                        "name": "ID:160",
+                        "visualName": "12: Identification User Number",
+                        "size": "26",
+                        "elementChecker": "true",
+                        "idNumber": "ID:160",
+                        "uniqueID": "342"
+                    }, {
+                        "name": "ID:161",
+                        "visualName": "13: Identification Vendor Code",
+                        "size": "26",
+                        "elementChecker": "true",
+                        "idNumber": "ID:161",
+                        "uniqueID": "343"
+                    }]
+                }, {
+                    "name": "Person",
+                    "visualName": "Person",
+                    "legendName": "HCBRM : FFCRA : Candidate Sourcing and Recruitment : Outreach and Recruitment : Person",
+                    "uniqueID": "344",
+                    "children": [{
+                        "name": "ID:449",
+                        "visualName": "1: Person Birth Date",
+                        "size": "17",
+                        "elementChecker": "true",
+                        "idNumber": "ID:449",
+                        "uniqueID": "345"
+                    }, {
+                        "name": "ID:450",
+                        "visualName": "2: Person Disability Code",
+                        "size": "22",
+                        "elementChecker": "true",
+                        "idNumber": "ID:450",
+                        "uniqueID": "346"
+                    }, {
+                        "name": "ID:451",
+                        "visualName": "3: Person Ethnicity and Race Identification Code",
+                        "size": "45",
+                        "elementChecker": "true",
+                        "idNumber": "ID:451",
+                        "uniqueID": "347"
+                    }, {
+                        "name": "ID:452",
+                        "visualName": "4: Person Family Name Text",
+                        "size": "23",
+                        "elementChecker": "true",
+                        "idNumber": "ID:452",
+                        "uniqueID": "348"
+                    }, {
+                        "name": "ID:453",
+                        "visualName": "5: Person First Name and Initial Text",
+                        "size": "34",
+                        "elementChecker": "true",
+                        "idNumber": "ID:453",
+                        "uniqueID": "349"
+                    }, {
+                        "name": "ID:454",
+                        "visualName": "6: Person FLSA Category Code",
+                        "size": "25",
+                        "elementChecker": "true",
+                        "idNumber": "ID:454",
+                        "uniqueID": "350"
+                    }, {
+                        "name": "ID:455",
+                        "visualName": "7: Person Full Name Text",
+                        "size": "21",
+                        "elementChecker": "true",
+                        "idNumber": "ID:455",
+                        "uniqueID": "351"
+                    }, {
+                        "name": "ID:456",
+                        "visualName": "8: Person Given Name Text",
+                        "size": "22",
+                        "elementChecker": "true",
+                        "idNumber": "ID:456",
+                        "uniqueID": "352"
+                    }, {
+                        "name": "ID:457",
+                        "visualName": "9: Person Identification Number",
+                        "size": "28",
+                        "elementChecker": "true",
+                        "idNumber": "ID:457",
+                        "uniqueID": "353"
+                    }, {
+                        "name": "ID:458",
+                        "visualName": "10: Person Middle Name Text",
+                        "size": "23",
+                        "elementChecker": "true",
+                        "idNumber": "ID:458",
+                        "uniqueID": "354"
+                    }, {
+                        "name": "ID:459",
+                        "visualName": "11: Person Race or National Origin Code",
+                        "size": "35",
+                        "elementChecker": "true",
+                        "idNumber": "ID:459",
+                        "uniqueID": "355"
+                    }, {
+                        "name": "ID:460",
+                        "visualName": "12: Person Sex Code",
+                        "size": "15",
+                        "elementChecker": "true",
+                        "idNumber": "ID:460",
+                        "uniqueID": "356"
+                    }, {
+                        "name": "ID:461",
+                        "visualName": "13: Person Statutory Indicator",
+                        "size": "26",
+                        "elementChecker": "true",
+                        "idNumber": "ID:461",
+                        "uniqueID": "357"
+                    }, {
+                        "name": "ID:462",
+                        "visualName": "14: Person Suffix Name Text",
+                        "size": "23",
+                        "elementChecker": "true",
+                        "idNumber": "ID:462",
+                        "uniqueID": "358"
+                    }]
+                }, {
+                    "name": "Remarks",
+                    "visualName": "Remarks",
+                    "legendName": "HCBRM : FFCRA : Candidate Sourcing and Recruitment : Outreach and Recruitment : Remarks",
+                    "uniqueID": "359",
+                    "children": [{
+                        "name": "ID:500",
+                        "visualName": "1: Remarks Detail Text",
+                        "size": "19",
+                        "elementChecker": "true",
+                        "idNumber": "ID:500",
+                        "uniqueID": "360"
+                    }]
+                }, {
+                    "name": "Service",
+                    "visualName": "Service",
+                    "legendName": "HCBRM : FFCRA : Candidate Sourcing and Recruitment : Outreach and Recruitment : Service",
+                    "uniqueID": "361",
+                    "children": [{
+                        "name": "ID:361",
+                        "visualName": "1: Military Service Veteran Status Code",
+                        "size": "36",
+                        "elementChecker": "true",
+                        "idNumber": "ID:361",
+                        "uniqueID": "362"
+                    }, {
+                        "name": "ID:363",
+                        "visualName": "2: Military Service Veterans Preference Code",
+                        "size": "41",
+                        "elementChecker": "true",
+                        "idNumber": "ID:363",
+                        "uniqueID": "363"
+                    }, {
+                        "name": "ID:526",
+                        "visualName": "3: Service Computation Date for Reduction in Force Purposes",
+                        "size": "56",
+                        "elementChecker": "true",
+                        "idNumber": "ID:526",
+                        "uniqueID": "364"
+                    }]
+                }, {
+                    "name": "Time",
+                    "visualName": "Time",
+                    "legendName": "HCBRM : FFCRA : Candidate Sourcing and Recruitment : Outreach and Recruitment : Time",
+                    "uniqueID": "365",
+                    "children": [{
+                        "name": "ID:575",
+                        "visualName": "1: Time Calendar Date",
+                        "size": "18",
+                        "elementChecker": "true",
+                        "idNumber": "ID:575",
+                        "uniqueID": "366"
+                    }]
+                }]
+            }, {
+                "name": "Section 5103",
+                "visualName": "Section 5103 Workplace Notification",
+                "legendName": "HCBRM : FFCRA : EPSLA : Section 5103",
+                "uniqueID": "367",
+                "children": [{
+                    "name": "Education",
+                    "visualName": "Education",
+                    "legendName": "HCBRM : FFCRA : Candidate Sourcing and Recruitment : Job Announcement Management : Education",
+                    "uniqueID": "368",
+                    "children": [{
+                        "name": "ID:78",
+                        "visualName": "1: Education Degree or Certificate Attained Calendar Year",
+                        "size": "54",
+                        "elementChecker": "true",
+                        "idNumber": "ID:78",
+                        "uniqueID": "369"
+                    }, {
+                        "name": "ID:79",
+                        "visualName": "2: Education Level Code",
+                        "size": "20",
+                        "elementChecker": "true",
+                        "idNumber": "ID:79",
+                        "uniqueID": "370"
+                    }]
+                }, {
+                    "name": "Military Service",
+                    "visualName": "Military Service",
+                    "legendName": "HCBRM : FFCRA : Candidate Sourcing and Recruitment : Job Announcement Management : Military Service",
+                    "uniqueID": "371",
+                    "children": [{
+                        "name": "ID:2",
+                        "visualName": "1: Active Military Service Uniformed Service Indicator",
+                        "size": "51",
+                        "elementChecker": "true",
+                        "idNumber": "ID:2",
+                        "uniqueID": "372"
+                    }, {
+                        "name": "ID:349",
+                        "visualName": "2: Military Service Deposit Amount",
+                        "size": "31",
+                        "elementChecker": "true",
+                        "idNumber": "ID:349",
+                        "uniqueID": "373"
+                    }, {
+                        "name": "ID:350",
+                        "visualName": "3: Military Service Deposit Pay Period Amount",
+                        "size": "42",
+                        "elementChecker": "true",
+                        "idNumber": "ID:350",
+                        "uniqueID": "374"
+                    }, {
+                        "name": "ID:351",
+                        "visualName": "4: Military Service Deposit Total Amount",
+                        "size": "37",
+                        "elementChecker": "true",
+                        "idNumber": "ID:351",
+                        "uniqueID": "375"
+                    }, {
+                        "name": "ID:352",
+                        "visualName": "5: Military Service Deposit Total Amount Current",
+                        "size": "45",
+                        "elementChecker": "true",
+                        "idNumber": "ID:352",
+                        "uniqueID": "376"
+                    }, {
+                        "name": "ID:353",
+                        "visualName": "6: Military Service Deposit Total Amount YTD",
+                        "size": "41",
+                        "elementChecker": "true",
+                        "idNumber": "ID:353",
+                        "uniqueID": "377"
+                    }, {
+                        "name": "ID:354",
+                        "visualName": "7: Military Service Deposit YTD Amount",
+                        "size": "35",
+                        "elementChecker": "true",
+                        "idNumber": "ID:354",
+                        "uniqueID": "378"
+                    }, {
+                        "name": "ID:355",
+                        "visualName": "8: Military Service Reduction in Force Veterans Preference Indicator",
+                        "size": "65",
+                        "elementChecker": "true",
+                        "idNumber": "ID:355",
+                        "uniqueID": "379"
+                    }, {
+                        "name": "ID:356",
+                        "visualName": "9: Military Service Start Date",
+                        "size": "27",
+                        "elementChecker": "true",
+                        "idNumber": "ID:356",
+                        "uniqueID": "380"
+                    }, {
+                        "name": "ID:357",
+                        "visualName": "10: Military Service Total Months Number",
+                        "size": "36",
+                        "elementChecker": "true",
+                        "idNumber": "ID:357",
+                        "uniqueID": "381"
+                    }, {
+                        "name": "ID:358",
+                        "visualName": "11: Military Service Total Years and Months",
+                        "size": "39",
+                        "elementChecker": "true",
+                        "idNumber": "ID:358",
+                        "uniqueID": "382"
+                    }, {
+                        "name": "ID:359",
+                        "visualName": "12: Military Service Tour of Duty Text",
+                        "size": "34",
+                        "elementChecker": "true",
+                        "idNumber": "ID:359",
+                        "uniqueID": "383"
+                    }, {
+                        "name": "ID:360",
+                        "visualName": "13: Military Service Veteran Status Code",
+                        "size": "36",
+                        "elementChecker": "true",
+                        "idNumber": "ID:360",
+                        "uniqueID": "384"
+                    }, {
+                        "name": "ID:362",
+                        "visualName": "14: Military Service Veterans Preference Code",
+                        "size": "41",
+                        "elementChecker": "true",
+                        "idNumber": "ID:362",
+                        "uniqueID": "385"
+                    }]
+                }, {
+                    "name": "Occupational",
+                    "visualName": "Occupational",
+                    "legendName": "HCBRM : FFCRA : Candidate Sourcing and Recruitment : Job Announcement Management : Occupational",
+                    "uniqueID": "386",
+                    "children": [{
+                        "name": "ID:364",
+                        "visualName": "1: Occupational Category Code",
+                        "size": "26",
+                        "elementChecker": "true",
+                        "idNumber": "ID:364",
+                        "uniqueID": "387"
+                    }, {
+                        "name": "ID:365",
+                        "visualName": "2: Occupational Series Text",
+                        "size": "24",
+                        "elementChecker": "true",
+                        "idNumber": "ID:365",
+                        "uniqueID": "388"
+                    }]
+                }, {
+                    "name": "Organization",
+                    "visualName": "Organization",
+                    "legendName": "HCBRM : FFCRA : Candidate Sourcing and Recruitment : Job Announcement Management : Organization",
+                    "uniqueID": "389",
+                    "children": [{
+                        "name": "ID:366",
+                        "visualName": "1: Organization Agency / Subelement Code",
+                        "size": "37",
+                        "elementChecker": "true",
+                        "idNumber": "ID:366",
+                        "uniqueID": "390"
+                    }, {
+                        "name": "ID:367",
+                        "visualName": "2: Organization Agency / Subelement Indicator",
+                        "size": "42",
+                        "elementChecker": "true",
+                        "idNumber": "ID:367",
+                        "uniqueID": "391"
+                    }, {
+                        "name": "ID:368",
+                        "visualName": "3: Organization Component Text",
+                        "size": "27",
+                        "elementChecker": "true",
+                        "idNumber": "ID:368",
+                        "uniqueID": "392"
+                    }, {
+                        "name": "ID:369",
+                        "visualName": "4: Organization Hierarchy Text",
+                        "size": "27",
+                        "elementChecker": "true",
+                        "idNumber": "ID:369",
+                        "uniqueID": "393"
+                    }, {
+                        "name": "ID:370",
+                        "visualName": "5: Organization Identification Code",
+                        "size": "32",
+                        "elementChecker": "true",
+                        "idNumber": "ID:370",
+                        "uniqueID": "394"
+                    }, {
+                        "name": "ID:371",
+                        "visualName": "6: Organization Name Text",
+                        "size": "22",
+                        "elementChecker": "true",
+                        "idNumber": "ID:371",
+                        "uniqueID": "395"
+                    }, {
+                        "name": "ID:372",
+                        "visualName": "7: Organization Pay Period Amount",
+                        "size": "30",
+                        "elementChecker": "true",
+                        "idNumber": "ID:372",
+                        "uniqueID": "396"
+                    }, {
+                        "name": "ID:373",
+                        "visualName": "8: Organization Title Text",
+                        "size": "23",
+                        "elementChecker": "true",
+                        "idNumber": "ID:373",
+                        "uniqueID": "397"
+                    }, {
+                        "name": "ID:374",
+                        "visualName": "9: Organization Total Amount Current",
+                        "size": "33",
+                        "elementChecker": "true",
+                        "idNumber": "ID:374",
+                        "uniqueID": "398"
+                    }, {
+                        "name": "ID:375",
+                        "visualName": "10: Organization Total Amount YTD",
+                        "size": "29",
+                        "elementChecker": "true",
+                        "idNumber": "ID:375",
+                        "uniqueID": "399"
+                    }, {
+                        "name": "ID:376",
+                        "visualName": "11: Organization Type Code",
+                        "size": "22",
+                        "elementChecker": "true",
+                        "idNumber": "ID:376",
+                        "uniqueID": "400"
+                    }, {
+                        "name": "ID:377",
+                        "visualName": "12: Organization YTD Amount",
+                        "size": "23",
+                        "elementChecker": "true",
+                        "idNumber": "ID:377",
+                        "uniqueID": "401"
+                    }]
+                }, {
+                    "name": "Pay",
+                    "visualName": "Pay",
+                    "legendName": "HCBRM : FFCRA : Candidate Sourcing and Recruitment : Job Announcement Management : Pay",
+                    "uniqueID": "402",
+                    "children": [{
+                        "name": "ID:383",
+                        "visualName": "1: Pay Adjustment Amount",
+                        "size": "21",
+                        "elementChecker": "true",
+                        "idNumber": "ID:383",
+                        "uniqueID": "403"
+                    }, {
+                        "name": "ID:384",
+                        "visualName": "2: Pay Allocated Tips Amount",
+                        "size": "25",
+                        "elementChecker": "true",
+                        "idNumber": "ID:384",
+                        "uniqueID": "404"
+                    }, {
+                        "name": "ID:385",
+                        "visualName": "3: Pay Annualized Rate Amount",
+                        "size": "26",
+                        "elementChecker": "true",
+                        "idNumber": "ID:385",
+                        "uniqueID": "405"
+                    }, {
+                        "name": "ID:386",
+                        "visualName": "4: Pay Area Code",
+                        "size": "13",
+                        "elementChecker": "true",
+                        "idNumber": "ID:386",
+                        "uniqueID": "406"
+                    }, {
+                        "name": "ID:387",
+                        "visualName": "5: Pay As of Date",
+                        "size": "14",
+                        "elementChecker": "true",
+                        "idNumber": "ID:387",
+                        "uniqueID": "407"
+                    }, {
+                        "name": "ID:388",
+                        "visualName": "6: Pay Basis Code",
+                        "size": "14",
+                        "elementChecker": "true",
+                        "idNumber": "ID:388",
+                        "uniqueID": "408"
+                    }, {
+                        "name": "ID:389",
+                        "visualName": "7: Pay Basis Text",
+                        "size": "14",
+                        "elementChecker": "true",
+                        "idNumber": "ID:389",
+                        "uniqueID": "409"
+                    }, {
+                        "name": "ID:390",
+                        "visualName": "8: Pay Current Pay Period Amount",
+                        "size": "29",
+                        "elementChecker": "true",
+                        "idNumber": "ID:390",
+                        "uniqueID": "410"
+                    }, {
+                        "name": "ID:391",
+                        "visualName": "9: Pay Current Total Pay Period Amount",
+                        "size": "35",
+                        "elementChecker": "true",
+                        "idNumber": "ID:391",
+                        "uniqueID": "411"
+                    }, {
+                        "name": "ID:392",
+                        "visualName": "10: Pay Disbursing Date",
+                        "size": "19",
+                        "elementChecker": "true",
+                        "idNumber": "ID:392",
+                        "uniqueID": "412"
+                    }, {
+                        "name": "ID:393",
+                        "visualName": "11: Pay Governmental Salary Amount",
+                        "size": "30",
+                        "elementChecker": "true",
+                        "idNumber": "ID:393",
+                        "uniqueID": "413"
+                    }, {
+                        "name": "ID:394",
+                        "visualName": "12: Pay Hourly Rate Adjusted Amount",
+                        "size": "31",
+                        "elementChecker": "true",
+                        "idNumber": "ID:394",
+                        "uniqueID": "414"
+                    }, {
+                        "name": "ID:395",
+                        "visualName": "13: Pay Hourly Rate Amount",
+                        "size": "22",
+                        "elementChecker": "true",
+                        "idNumber": "ID:395",
+                        "uniqueID": "415"
+                    }, {
+                        "name": "ID:396",
+                        "visualName": "14: Pay Leave Year Hours",
+                        "size": "20",
+                        "elementChecker": "true",
+                        "idNumber": "ID:396",
+                        "uniqueID": "416"
+                    }, {
+                        "name": "ID:397",
+                        "visualName": "15: Pay Level Indicator",
+                        "size": "19",
+                        "elementChecker": "true",
+                        "idNumber": "ID:397",
+                        "uniqueID": "417"
+                    }, {
+                        "name": "ID:398",
+                        "visualName": "16: Pay Locality Adjustment Amount",
+                        "size": "30",
+                        "elementChecker": "true",
+                        "idNumber": "ID:398",
+                        "uniqueID": "418"
+                    }, {
+                        "name": "ID:399",
+                        "visualName": "17: Pay Locality Percent",
+                        "size": "20",
+                        "elementChecker": "true",
+                        "idNumber": "ID:399",
+                        "uniqueID": "419"
+                    }, {
+                        "name": "ID:400",
+                        "visualName": "18: Pay Pay Period Adjusted Hours",
+                        "size": "29",
+                        "elementChecker": "true",
+                        "idNumber": "ID:400",
+                        "uniqueID": "420"
+                    }, {
+                        "name": "ID:401",
+                        "visualName": "19: Pay Pay Period Amount",
+                        "size": "21",
+                        "elementChecker": "true",
+                        "idNumber": "ID:401",
+                        "uniqueID": "421"
+                    }, {
+                        "name": "ID:402",
+                        "visualName": "20: Pay Pay Period Ending Date",
+                        "size": "26",
+                        "elementChecker": "true",
+                        "idNumber": "ID:402",
+                        "uniqueID": "422"
+                    }, {
+                        "name": "ID:403",
+                        "visualName": "21: Pay Pay Period Hours",
+                        "size": "20",
+                        "elementChecker": "true",
+                        "idNumber": "ID:403",
+                        "uniqueID": "423"
+                    }, {
+                        "name": "ID:404",
+                        "visualName": "22: Pay Pay Period Number",
+                        "size": "21",
+                        "elementChecker": "true",
+                        "idNumber": "ID:404",
+                        "uniqueID": "424"
+                    }, {
+                        "name": "ID:405",
+                        "visualName": "23: Pay Pay Period Starting Date",
+                        "size": "28",
+                        "elementChecker": "true",
+                        "idNumber": "ID:405",
+                        "uniqueID": "425"
+                    }, {
+                        "name": "ID:406",
+                        "visualName": "24: Pay Period Amount",
+                        "size": "17",
+                        "elementChecker": "true",
+                        "idNumber": "ID:406",
+                        "uniqueID": "426"
+                    }, {
+                        "name": "ID:407",
+                        "visualName": "25: Pay Period Ending Date",
+                        "size": "22",
+                        "elementChecker": "true",
+                        "idNumber": "ID:407",
+                        "uniqueID": "427"
+                    }, {
+                        "name": "ID:408",
+                        "visualName": "26: Pay Period Hours",
+                        "size": "16",
+                        "elementChecker": "true",
+                        "idNumber": "ID:408",
+                        "uniqueID": "428"
+                    }, {
+                        "name": "ID:409",
+                        "visualName": "27: Pay Period Number",
+                        "size": "17",
+                        "elementChecker": "true",
+                        "idNumber": "ID:409",
+                        "uniqueID": "429"
+                    }, {
+                        "name": "ID:410",
+                        "visualName": "28: Pay Period Starting Date",
+                        "size": "24",
+                        "elementChecker": "true",
+                        "idNumber": "ID:410",
+                        "uniqueID": "430"
+                    }, {
+                        "name": "ID:411",
+                        "visualName": "29: Pay Plan Code",
+                        "size": "13",
+                        "elementChecker": "true",
+                        "idNumber": "ID:411",
+                        "uniqueID": "431"
+                    }, {
+                        "name": "ID:412",
+                        "visualName": "30: Pay Plan/Grade Text",
+                        "size": "19",
+                        "elementChecker": "true",
+                        "idNumber": "ID:412",
+                        "uniqueID": "432"
+                    }, {
+                        "name": "ID:413",
+                        "visualName": "31: Pay Rate Amount",
+                        "size": "15",
+                        "elementChecker": "true",
+                        "idNumber": "ID:413",
+                        "uniqueID": "433"
+                    }, {
+                        "name": "ID:414",
+                        "visualName": "32: Pay Rate Determinant Code",
+                        "size": "25",
+                        "elementChecker": "true",
+                        "idNumber": "ID:414",
+                        "uniqueID": "434"
+                    }, {
+                        "name": "ID:415",
+                        "visualName": "33: Pay Rate Indicator",
+                        "size": "18",
+                        "elementChecker": "true",
+                        "idNumber": "ID:415",
+                        "uniqueID": "435"
+                    }, {
+                        "name": "ID:416",
+                        "visualName": "34: Pay Salary Amount",
+                        "size": "17",
+                        "elementChecker": "true",
+                        "idNumber": "ID:416",
+                        "uniqueID": "436"
+                    }, {
+                        "name": "ID:417",
+                        "visualName": "35: Pay Salary Rate Amount",
+                        "size": "22",
+                        "elementChecker": "true",
+                        "idNumber": "ID:417",
+                        "uniqueID": "437"
+                    }, {
+                        "name": "ID:418",
+                        "visualName": "36: Pay Shift Code",
+                        "size": "14",
+                        "elementChecker": "true",
+                        "idNumber": "ID:418",
+                        "uniqueID": "438"
+                    }, {
+                        "name": "ID:419",
+                        "visualName": "37: Pay Status Text",
+                        "size": "15",
+                        "elementChecker": "true",
+                        "idNumber": "ID:419",
+                        "uniqueID": "439"
+                    }, {
+                        "name": "ID:420",
+                        "visualName": "38: Pay Sunday Indicator",
+                        "size": "20",
+                        "elementChecker": "true",
+                        "idNumber": "ID:420",
+                        "uniqueID": "440"
+                    }, {
+                        "name": "ID:421",
+                        "visualName": "39: Pay Supplement Amount",
+                        "size": "21",
+                        "elementChecker": "true",
+                        "idNumber": "ID:421",
+                        "uniqueID": "441"
+                    }, {
+                        "name": "ID:422",
+                        "visualName": "40: Pay Supplement Amount YTD",
+                        "size": "25",
+                        "elementChecker": "true",
+                        "idNumber": "ID:422",
+                        "uniqueID": "442"
+                    }, {
+                        "name": "ID:423",
+                        "visualName": "41: Pay Supplement Pay Period Amount",
+                        "size": "32",
+                        "elementChecker": "true",
+                        "idNumber": "ID:423",
+                        "uniqueID": "443"
+                    }, {
+                        "name": "ID:424",
+                        "visualName": "42: Pay Supplement YTD Amount",
+                        "size": "25",
+                        "elementChecker": "true",
+                        "idNumber": "ID:424",
+                        "uniqueID": "444"
+                    }, {
+                        "name": "ID:425",
+                        "visualName": "43: Pay Table Identifier",
+                        "size": "20",
+                        "elementChecker": "true",
+                        "idNumber": "ID:425",
+                        "uniqueID": "445"
+                    }, {
+                        "name": "ID:426",
+                        "visualName": "44: Pay Table Identifier Text",
+                        "size": "25",
+                        "elementChecker": "true",
+                        "idNumber": "ID:426",
+                        "uniqueID": "446"
+                    }, {
+                        "name": "ID:427",
+                        "visualName": "45: Pay Total Adjusted Amount",
+                        "size": "25",
+                        "elementChecker": "true",
+                        "idNumber": "ID:427",
+                        "uniqueID": "447"
+                    }, {
+                        "name": "ID:428",
+                        "visualName": "46: Pay Total Adjusted Amount YTD",
+                        "size": "29",
+                        "elementChecker": "true",
+                        "idNumber": "ID:428",
+                        "uniqueID": "448"
+                    }, {
+                        "name": "ID:429",
+                        "visualName": "47: Pay Total Amount",
+                        "size": "16",
+                        "elementChecker": "true",
+                        "idNumber": "ID:429",
+                        "uniqueID": "449"
+                    }, {
+                        "name": "ID:430",
+                        "visualName": "48: Pay Total Amount Current",
+                        "size": "24",
+                        "elementChecker": "true",
+                        "idNumber": "ID:430",
+                        "uniqueID": "450"
+                    }, {
+                        "name": "ID:431",
+                        "visualName": "49: Pay Total Amount YTD",
+                        "size": "20",
+                        "elementChecker": "true",
+                        "idNumber": "ID:431",
+                        "uniqueID": "451"
+                    }, {
+                        "name": "ID:432",
+                        "visualName": "50: Pay Total Biweekly Pay Period Hours",
+                        "size": "35",
+                        "elementChecker": "true",
+                        "idNumber": "ID:432",
+                        "uniqueID": "452"
+                    }, {
+                        "name": "ID:433",
+                        "visualName": "51: Pay Total Days",
+                        "size": "14",
+                        "elementChecker": "true",
+                        "idNumber": "ID:433",
+                        "uniqueID": "453"
+                    }, {
+                        "name": "ID:434",
+                        "visualName": "52: Pay Total Hours",
+                        "size": "15",
+                        "elementChecker": "true",
+                        "idNumber": "ID:434",
+                        "uniqueID": "454"
+                    }, {
+                        "name": "ID:435",
+                        "visualName": "53: Pay Total Leave Year Hours",
+                        "size": "26",
+                        "elementChecker": "true",
+                        "idNumber": "ID:435",
+                        "uniqueID": "455"
+                    }, {
+                        "name": "ID:436",
+                        "visualName": "54: Pay Total Pay Period Adjusted Hours",
+                        "size": "35",
+                        "elementChecker": "true",
+                        "idNumber": "ID:436",
+                        "uniqueID": "456"
+                    }, {
+                        "name": "ID:437",
+                        "visualName": "55: Pay Total Pay Period Amount",
+                        "size": "27",
+                        "elementChecker": "true",
+                        "idNumber": "ID:437",
+                        "uniqueID": "457"
+                    }, {
+                        "name": "ID:438",
+                        "visualName": "56: Pay Total Pay Period Hours",
+                        "size": "26",
+                        "elementChecker": "true",
+                        "idNumber": "ID:438",
+                        "uniqueID": "458"
+                    }, {
+                        "name": "ID:439",
+                        "visualName": "57: Pay Total Pay Period Worked Hours",
+                        "size": "33",
+                        "elementChecker": "true",
+                        "idNumber": "ID:439",
+                        "uniqueID": "459"
+                    }, {
+                        "name": "ID:440",
+                        "visualName": "58: Pay Total Percent",
+                        "size": "17",
+                        "elementChecker": "true",
+                        "idNumber": "ID:440",
+                        "uniqueID": "460"
+                    }, {
+                        "name": "ID:441",
+                        "visualName": "59: Pay Total Salary Rate Amount",
+                        "size": "28",
+                        "elementChecker": "true",
+                        "idNumber": "ID:441",
+                        "uniqueID": "461"
+                    }, {
+                        "name": "ID:442",
+                        "visualName": "60: Pay Type Code",
+                        "size": "13",
+                        "elementChecker": "true",
+                        "idNumber": "ID:442",
+                        "uniqueID": "462"
+                    }, {
+                        "name": "ID:443",
+                        "visualName": "61: Pay Type Text",
+                        "size": "13",
+                        "elementChecker": "true",
+                        "idNumber": "ID:443",
+                        "uniqueID": "463"
+                    }, {
+                        "name": "ID:444",
+                        "visualName": "62: Pay Wages, Tips, etc. Amount",
+                        "size": "28",
+                        "elementChecker": "true",
+                        "idNumber": "ID:444",
+                        "uniqueID": "464"
+                    }, {
+                        "name": "ID:445",
+                        "visualName": "63: Pay Wages, Tips, Other Compensation Amount",
+                        "size": "42",
+                        "elementChecker": "true",
+                        "idNumber": "ID:445",
+                        "uniqueID": "465"
+                    }, {
+                        "name": "ID:446",
+                        "visualName": "64: Pay Weeks Number",
+                        "size": "16",
+                        "elementChecker": "true",
+                        "idNumber": "ID:446",
+                        "uniqueID": "466"
+                    }, {
+                        "name": "ID:447",
+                        "visualName": "65: Pay YTD Amount",
+                        "size": "14",
+                        "elementChecker": "true",
+                        "idNumber": "ID:447",
+                        "uniqueID": "467"
+                    }, {
+                        "name": "ID:646",
+                        "visualName": "66: Worked Pay Pay Period Hours",
+                        "size": "27",
+                        "elementChecker": "true",
+                        "idNumber": "ID:646",
+                        "uniqueID": "468"
+                    }]
+                }, {
+                    "name": "Position",
+                    "visualName": "Position",
+                    "legendName": "HCBRM : FFCRA : Candidate Sourcing and Recruitment : Job Announcement Management : Position",
+                    "uniqueID": "469",
+                    "children": [{
+                        "name": "ID:471",
+                        "visualName": "1: Position Grade, Level, Class, Rank, or Pay Band Code",
+                        "size": "52",
+                        "elementChecker": "true",
+                        "idNumber": "ID:471",
+                        "uniqueID": "470"
+                    }, {
+                        "name": "ID:498",
+                        "visualName": "2: Position Official Title",
+                        "size": "23",
+                        "elementChecker": "true",
+                        "idNumber": "ID:498",
+                        "uniqueID": "471"
+                    }, {
+                        "name": "ID:499",
+                        "visualName": "3: Position Service Designator",
+                        "size": "27",
+                        "elementChecker": "true",
+                        "idNumber": "ID:499",
+                        "uniqueID": "472"
+                    }]
+                }, {
+                    "name": "Remarks",
+                    "visualName": "Remarks",
+                    "legendName": "HCBRM : FFCRA : Candidate Sourcing and Recruitment : Job Announcement Management : Remarks",
+                    "uniqueID": "473",
+                    "children": [{
+                        "name": "ID:500",
+                        "visualName": "1: Remarks Detail Text",
+                        "size": "19",
+                        "elementChecker": "true",
+                        "idNumber": "ID:500",
+                        "uniqueID": "474"
+                    }]
+                }, {
+                    "name": "Salary",
+                    "visualName": "Salary",
+                    "legendName": "HCBRM : FFCRA : Candidate Sourcing and Recruitment : Job Announcement Management : Salary",
+                    "uniqueID": "475",
+                    "children": [{
+                        "name": "ID:522",
+                        "visualName": "1: Salary Total Amount YTD",
+                        "size": "23",
+                        "elementChecker": "true",
+                        "idNumber": "ID:522",
+                        "uniqueID": "476"
+                    }, {
+                        "name": "ID:523",
+                        "visualName": "2: Salary YTD Amount",
+                        "size": "17",
+                        "elementChecker": "true",
+                        "idNumber": "ID:523",
+                        "uniqueID": "477"
+                    }]
+                }, {
+                    "name": "Service",
+                    "visualName": "Service",
+                    "legendName": "HCBRM : FFCRA : Candidate Sourcing and Recruitment : Job Announcement Management : Service",
+                    "uniqueID": "478",
+                    "children": [{
+                        "name": "ID:361",
+                        "visualName": "1: Military Service Veteran Status Code",
+                        "size": "36",
+                        "elementChecker": "true",
+                        "idNumber": "ID:361",
+                        "uniqueID": "479"
+                    }, {
+                        "name": "ID:363",
+                        "visualName": "2: Military Service Veterans Preference Code",
+                        "size": "41",
+                        "elementChecker": "true",
+                        "idNumber": "ID:363",
+                        "uniqueID": "480"
+                    }, {
+                        "name": "ID:526",
+                        "visualName": "3: Service Computation Date for Reduction in Force Purposes",
+                        "size": "56",
+                        "elementChecker": "true",
+                        "idNumber": "ID:526",
+                        "uniqueID": "481"
+                    }]
+                }, {
+                    "name": "Supervisory",
+                    "visualName": "Supervisory",
+                    "legendName": "HCBRM : FFCRA : Candidate Sourcing and Recruitment : Job Announcement Management : Supervisory",
+                    "uniqueID": "482",
+                    "children": [{
+                        "name": "ID:542",
+                        "visualName": "1: Supervisory Status Code",
+                        "size": "23",
+                        "elementChecker": "true",
+                        "idNumber": "ID:542",
+                        "uniqueID": "483"
+                    }]
+                }, {
+                    "name": "Time",
+                    "visualName": "Time",
+                    "legendName": "HCBRM : FFCRA : Candidate Sourcing and Recruitment : Job Announcement Management : Time",
+                    "uniqueID": "484",
+                    "children": [{
+                        "name": "ID:575",
+                        "visualName": "1: Time Calendar Date",
+                        "size": "18",
+                        "elementChecker": "true",
+                        "idNumber": "ID:575",
+                        "uniqueID": "485"
+                    }]
+                }]
+            }, {
+                "name": "Section 5103",
+                "visualName": "Section 5103 Workplace Notification",
+                "legendName": "HCBRM : FFCRA : EPSLA : Section 5103",
+                "uniqueID": "367",
+                "children": [{
+                    "name": "Education",
+                    "visualName": "Education",
+                    "legendName": "HCBRM : FFCRA : Candidate Sourcing and Recruitment : Job Announcement Management : Education",
+                    "uniqueID": "368",
+                    "children": [{
+                        "name": "ID:78",
+                        "visualName": "1: Education Degree or Certificate Attained Calendar Year",
+                        "size": "54",
+                        "elementChecker": "true",
+                        "idNumber": "ID:78",
+                        "uniqueID": "369"
+                    }]
+                }]
+            }, {
+                "name": "Section 5104",
+                "visualName": "Section 5104 Employer Prohibition",
+                "legendName": "HCBRM : FFCRA : EPSLA : Section 5104",
+                "uniqueID": "367",
+                "children": [{
+                    "name": "Education",
+                    "visualName": "Education",
+                    "legendName": "HCBRM : FFCRA : Candidate Sourcing and Recruitment : Job Announcement Management : Education",
+                    "uniqueID": "368",
+                    "children": [{
+                        "name": "ID:78",
+                        "visualName": "1: Education Degree or Certificate Attained Calendar Year",
+                        "size": "54",
+                        "elementChecker": "true",
+                        "idNumber": "ID:78",
+                        "uniqueID": "369"
+                    }]
+                }]
+            }, {
+                "name": "Section 5105",
+                "visualName": "Section 5105 Employer Violations",
+                "legendName": "HCBRM : FFCRA : EPSLA : Section 5105",
+                "uniqueID": "367",
+                "children": [{
+                    "name": "Education",
+                    "visualName": "Education",
+                    "legendName": "HCBRM : FFCRA : Candidate Sourcing and Recruitment : Job Announcement Management : Education",
+                    "uniqueID": "368",
+                    "children": [{
+                        "name": "ID:78",
+                        "visualName": "1: Education Degree or Certificate Attained Calendar Year",
+                        "size": "54",
+                        "elementChecker": "true",
+                        "idNumber": "ID:78",
+                        "uniqueID": "369"
+                    }]
+                }]
+            }, {
+                "name": "Section 5106",
+                "visualName": "Section 5106 Multiemployer Bargaining Units",
+                "legendName": "HCBRM : FFCRA : EPSLA : Section 5106",
+                "uniqueID": "367",
+                "children": [{
+                    "name": "Education",
+                    "visualName": "Education",
+                    "legendName": "HCBRM : FFCRA : Candidate Sourcing and Recruitment : Job Announcement Management : Education",
+                    "uniqueID": "368",
+                    "children": [{
+                        "name": "ID:78",
+                        "visualName": "1: Education Degree or Certificate Attained Calendar Year",
+                        "size": "54",
+                        "elementChecker": "true",
+                        "idNumber": "ID:78",
+                        "uniqueID": "369"
+                    }]
+                }]
+            }, {
+                "name": "Section 5107",
+                "visualName": "Section 5107 Employer Rights and Employee Resignation, Retirement, or Termination",
+                "legendName": "HCBRM : FFCRA : EPSLA : Section 5107",
+                "uniqueID": "367",
+                "children": [{
+                    "name": "Education",
+                    "visualName": "Education",
+                    "legendName": "HCBRM : FFCRA : Candidate Sourcing and Recruitment : Job Announcement Management : Education",
+                    "uniqueID": "368",
+                    "children": [{
+                        "name": "ID:78",
+                        "visualName": "1: Education Degree or Certificate Attained Calendar Year",
+                        "size": "54",
+                        "elementChecker": "true",
+                        "idNumber": "ID:78",
+                        "uniqueID": "369"
+                    }]
+                }]
+            }, {
+                "name": "Section 5108",
+                "visualName": "Section 5108 Effective not later than 15 days after enactment",
+                "legendName": "HCBRM : FFCRA : EPSLA : Section 5108",
+                "uniqueID": "367",
+                "children": [{
+                    "name": "Education",
+                    "visualName": "Education",
+                    "legendName": "HCBRM : FFCRA : Candidate Sourcing and Recruitment : Job Announcement Management : Education",
+                    "uniqueID": "368",
+                    "children": [{
+                        "name": "ID:78",
+                        "visualName": "1: Education Degree or Certificate Attained Calendar Year",
+                        "size": "54",
+                        "elementChecker": "true",
+                        "idNumber": "ID:78",
+                        "uniqueID": "369"
+                    }]
+                }]
+            }, {
+                "name": "Section 5109",
+                "visualName": "Section 5109 Expires on Dec 31, 2020",
+                "legendName": "HCBRM : FFCRA : EPSLA : Section 5109",
+                "uniqueID": "367",
+                "children": [{
+                    "name": "Education",
+                    "visualName": "Education",
+                    "legendName": "HCBRM : FFCRA : Candidate Sourcing and Recruitment : Job Announcement Management : Education",
+                    "uniqueID": "368",
+                    "children": [{
+                        "name": "ID:78",
+                        "visualName": "1: Education Degree or Certificate Attained Calendar Year",
+                        "size": "54",
+                        "elementChecker": "true",
+                        "idNumber": "ID:78",
+                        "uniqueID": "369"
+                    }]
+                }]
+            }, {
+                "name": "Section 5110",
+                "visualName": "Section 5110 Employer Size and Employee Sick Leave Caps",
+                "legendName": "HCBRM : FFCRA : EPSLA : Section 5110",
+                "uniqueID": "367",
+                "children": [{
+                    "name": "Education",
+                    "visualName": "Education",
+                    "legendName": "HCBRM : FFCRA : Candidate Sourcing and Recruitment : Job Announcement Management : Education",
+                    "uniqueID": "368",
+                    "children": [{
+                        "name": "ID:78",
+                        "visualName": "1: Education Degree or Certificate Attained Calendar Year",
+                        "size": "54",
+                        "elementChecker": "true",
+                        "idNumber": "ID:78",
+                        "uniqueID": "369"
+                    }]
+                }]
+            }, {
+                "name": "Section 5111",
+                "visualName": "Section 5111 Labor Exclusions and Exemptions",
+                "legendName": "HCBRM : FFCRA : EPSLA : Section 5111",
+                "uniqueID": "367",
+                "children": [{
+                    "name": "Education",
+                    "visualName": "Education",
+                    "legendName": "HCBRM : FFCRA : Candidate Sourcing and Recruitment : Job Announcement Management : Education",
+                    "uniqueID": "368",
+                    "children": [{
+                        "name": "ID:78",
+                        "visualName": "1: Education Degree or Certificate Attained Calendar Year",
+                        "size": "54",
+                        "elementChecker": "true",
+                        "idNumber": "ID:78",
+                        "uniqueID": "369"
+                    }]
+                }]
+            }]
+        }]
+    }]
+};
+
+// This variable is used when hovering over the elements
+var objectClassData = {
+    1: "Action Effective Date",
+    2: "Active Military Service Uniformed Service Indicator",
+    3: "Address City Name Text",
+    4: "Address Country Code",
+    5: "Address Foreign Postal Code",
+    6: "Address Foreign State/Province Code",
+    7: "Address Full Address Text",
+    8: "Address Full Text",
+    9: "Address Line Extension Text",
+    10: "Address Line Text",
+    11: "Address Postal Code",
+    12: "Address Postal Extension Code",
+    13: "Address State Code",
+    14: "Address State/Province Code",
+    15: "Address Type Container",
+    16: "Agency / Subelement Code",
+    17: "Agency / Subelement Organization Indicator",
+    18: "Allotment Pay Period Amount",
+    19: "Allotment Total Amount",
+    20: "Allotment Total Amount Current",
+    21: "Allotment Total Amount YTD",
+    22: "Allotment YTD Amount",
+    23: "Allowance Pay Period Amount",
+    24: "Allowance Total Amount",
+    25: "Alternate Work Schedule Code",
+    26: "Alternate Work Schedule Eligibility Indicator",
+    27: "Alternate Work Schedule Instances Pay Period Number",
+    28: "Alternate Work Schedule Type Code",
+    29: "Bank ABA Routing Number",
+    30: "Bank Account Number",
+    31: "Bank Name Text",
+    32: "Benefits Adjusted Amount",
+    33: "Benefits Biweekly Annuity Amount",
+    34: "Benefits Coverage Indicator",
+    35: "Benefits Election Date",
+    36: "Benefits Election Notification Date",
+    37: "Benefits Pay Period Amount",
+    38: "Benefits Plan Code",
+    39: "Benefits Plan Description Text",
+    40: "Benefits Plan Rate Percent",
+    41: "Benefits Savings Pay Period Amount",
+    42: "Benefits Service Computation Date",
+    43: "Benefits YTD Amount",
+    44: "Charity Total Amount",
+    45: "Charity Total Amount YTD",
+    46: "Charity YTD Amount",
+    47: "Contact Information Email Address Text",
+    48: "Contact Information Fax Number",
+    49: "Contact Information Phone Number",
+    50: "Contact Information Telephone Extension Number",
+    51: "Contact Information Telephone Number",
+    52: "Cost Accounting Job Order Number",
+    53: "Cost Accounting Standing Job Order Number",
+    54: "Country Citizenship Identification Indicator",
+    55: "Credit Reduction Work Schedule Pay Period Hours",
+    56: "Credit Reduction Work Schedule YTD Hours",
+    57: "Debt Adjusted Amount",
+    58: "Debt Pay Period Amount",
+    59: "Debt Total Adjusted Amount",
+    60: "Debt Total Amount",
+    61: "Debt Total Amount Current",
+    62: "Debt Total Amount YTD",
+    63: "Debt YTD Amount",
+    64: "Deductions Pay Period Amount",
+    65: "Deductions Total Amount Current",
+    66: "Deductions Total Amount YTD",
+    67: "Deductions YTD Amount",
+    68: "Deferred Compensation Contribution Amount",
+    69: "Deferred Compensation Pay Period Amount",
+    70: "Deferred Compensation Total Amount",
+    71: "Deferred Compensation Total Amount Current",
+    72: "Deferred Compensation Total Amount YTD",
+    73: "Deferred Compensation YTD Amount",
+    74: "Dependent Care Adjusted Amount",
+    75: "Dependent Care Pay Period Amount",
+    76: "Donated Annual Leave Date",
+    77: "E-mail Address Text",
+    78: "Education Degree or Certificate Attained Calendar Year",
+    79: "Education Level Code",
+    80: "Employee FLSA Code",
+    81: "Employee Tenure Code for Reduction in Force Purposes",
+    82: "Employer Type Code",
+    83: "Extension Detail Container",
+    84: "Frozen Service Creditable Months and Years Number",
+    85: "Frozen Service Creditable Months Number",
+    86: "Functional Classification Code",
+    87: "Group Life Insurance Benefits Pay Period Amount",
+    88: "Group Life Insurance Benefits YTD Amount",
+    89: "Health Care Insurance Benefits Adjusted Amount",
+    90: "Health Care Insurance Benefits Amount",
+    91: "Health Care Insurance Benefits Coverage Indicator",
+    92: "Health Care Insurance Benefits Deduction Indicator",
+    93: "Health Care Insurance Benefits Effective Date",
+    94: "Health Care Insurance Benefits Election Date",
+    95: "Health Care Insurance Benefits Election Notification Date",
+    96: "Health Care Insurance Benefits Event Code",
+    97: "Health Care Insurance Benefits Pay Indicator",
+    98: "Health Care Insurance Benefits Pay Period Amount",
+    99: "Health Care Insurance Benefits Payment Type Code",
+    100: "Health Care Insurance Benefits Plan Code",
+    101: "Health Care Insurance Benefits Plan Indicator",
+    102: "Health Care Insurance Benefits Rate Percent",
+    103: "Health Care Insurance Benefits Termination Date",
+    104: "Health Care Insurance Benefits Termination Notification Date",
+    105: "Health Care Insurance Benefits Total Adjusted Amount",
+    106: "Health Care Insurance Benefits Total Amount",
+    107: "Health Care Insurance Benefits Total Amount Current",
+    108: "Health Care Insurance Benefits Total Amount YTD",
+    109: "Health Care Insurance Benefits Total Withheld Amount",
+    110: "Health Care Insurance Benefits Wages Amount",
+    111: "Health Care Insurance Benefits Wages and Tips Amount",
+    112: "Health Care Insurance Benefits Withheld Amount",
+    113: "Health Care Insurance Benefits YTD Amount",
+    114: "Health Insurance Benefits Collected Prepaid Amount",
+    115: "Health Insurance Benefits Continuing Coverage Election Date",
+    116: "Health Insurance Benefits Continuing Coverage Indicator",
+    117: "Health Insurance Benefits Debt Amount",
+    118: "Health Insurance Benefits Election Effective Date",
+    119: "Health Insurance Benefits Employee Withholding Pay Period Amount",
+    120: "Health Insurance Benefits Enrollment Code",
+    121: "Health Insurance Benefits Event Code",
+    122: "Health Insurance Benefits Government Contribution Pay Period Amount",
+    123: "Health Insurance Benefits Government Contribution YTD Amount",
+    124: "Health Insurance Benefits Insufficient Pay Continuing Coverage Election Rights Notification Date",
+    125: "Health Insurance Benefits Insufficient Pay Termination Date",
+    126: "Health Insurance Benefits Non Federal Service Continuing Coverage Election Election Date",
+    127: "Health Insurance Benefits Nonpay Continuing Coverage Termination Date",
+    128: "Health Insurance Benefits Pay Period Amount",
+    129: "Health Insurance Benefits Pre-Tax Adjusted Amount",
+    130: "Health Insurance Benefits Pre-tax Amount",
+    131: "Health Insurance Benefits Pre-Tax Deduction Indicator",
+    132: "Health Insurance Benefits Pre-Tax Pay Period Amount",
+    133: "Health Insurance Benefits Pre-Tax YTD Amount",
+    134: "Health Insurance Benefits Prepaid Collected Pay Period Amount",
+    135: "Health Insurance Benefits Refund Enrollment Code",
+    136: "Health Insurance Benefits Refund Pay Period Amount",
+    137: "Health Insurance Benefits Refund YTD Amount",
+    138: "Health Insurance Benefits Retroactive Enrollment Code",
+    139: "Health Insurance Benefits Retroactive Pay Period Amount",
+    140: "Health Insurance Benefits Retroactive YTD Amount",
+    141: "Health Insurance Benefits Temporary Continuation of Coverage Pay Period Amount",
+    142: "Health Insurance Benefits YTD Amount",
+    143: "Healthcare Adjusted Amount",
+    144: "Healthcare Limited Expense Adjusted Amount",
+    145: "Healthcare Limited Expense Pay Period Amount",
+    146: "Healthcare Limited Expense YTD Amount",
+    147: "Healthcare Pay Period Amount",
+    148: "Healthcare YTD Amount",
+    149: "Identification Agent Code",
+    150: "Identification EHRI Identifier",
+    151: "Identification Employer Account Number",
+    152: "Identification Employer Identification Number",
+    153: "Identification Establishment Number",
+    154: "Identification Indicator Code",
+    155: "Identification Personnel Office Identifier",
+    156: "Identification Preparer Code",
+    157: "Identification Social Security Number",
+    158: "Identification Software Code",
+    159: "Identification Terminating Business Indicator",
+    160: "Identification User Number",
+    161: "Identification Vendor Code",
+    162: "Insurance Benefits Pay Period Amount",
+    163: "Insurance Benefits Total Amount",
+    164: "Insurance Benefits YTD Amount",
+    165: "Investment Benefits Adjusted Amount",
+    166: "Investment Benefits Biweekly Annuity Amount",
+    167: "Investment Benefits Coverage Indicator",
+    168: "Investment Benefits Cumulative Amount",
+    169: "Investment Benefits Current Pay Period Amount",
+    170: "Investment Benefits Current Total Pay Period Amount",
+    171: "Investment Benefits Effective Date",
+    172: "Investment Benefits Election Date",
+    173: "Investment Benefits Election Notification Date",
+    174: "Investment Benefits Pay Period Amount",
+    175: "Investment Benefits Plan Code",
+    176: "Investment Benefits Plan Description Text",
+    177: "Investment Benefits Plan Indicator",
+    178: "Investment Benefits Plan Rate Percent",
+    179: "Investment Benefits Savings Amount Current",
+    180: "Investment Benefits Savings Percent YTD",
+    181: "Investment Benefits Service Computation Date",
+    182: "Investment Benefits Total Adjusted Amount",
+    183: "Investment Benefits Total Amount",
+    184: "Investment Benefits Total Amount Current",
+    185: "Investment Benefits Total Amount YTD",
+    186: "Investment Benefits Total Cumulative Amount",
+    187: "Investment Benefits Total Pay Period Amount",
+    188: "Investment Benefits Total Percent",
+    189: "Investment Benefits Total Percent YTD",
+    190: "Investment Benefits YTD Amount",
+    191: "Investment Benefits YTD Percent",
+    192: "Investment Total Amount",
+    193: "Leave 5 USC 6323A Pay Period Balance Hours",
+    194: "Leave 5 USC 6323A Pay Period Used Hours",
+    195: "Leave 5 USC 6323B Pay Period Balance Hours",
+    196: "Leave 5 USC 6323B Pay Period Used Hours",
+    197: "Leave 5 USC 6323C Pay Period Used Hours",
+    198: "Leave 5 USC 6323D Pay Period Balance Hours",
+    199: "Leave 5 USC 6323D Pay Period Used Hours",
+    200: "Leave Abeyance Hours",
+    201: "Leave Accrual Rate Hours",
+    202: "Leave Accrual Rate Pay Period Hours",
+    203: "Leave Accrued Pay Period Hours",
+    204: "Leave Accrued YTD Hours",
+    205: "Leave Beginning Date",
+    206: "Leave Calendar YTD Used Hours",
+    207: "Leave Ceiling Hours",
+    208: "Leave Current Pay Period Beginning Balance Hours",
+    209: "Leave Current Total Pay Period Hours",
+    210: "Leave Current Total Pay Period Hours Beginning Balance",
+    211: "Leave Donation Amount",
+    212: "Leave Donation Date",
+    213: "Leave Earned Hours",
+    214: "Leave Earned YTD Hours",
+    215: "Leave Ending Balance Hours",
+    216: "Leave Ending Date",
+    217: "Leave Expiration Date",
+    218: "Leave History Hours",
+    219: "Leave Hourly Rate Amount",
+    220: "Leave Hourly Rate Start Date",
+    221: "Leave Injury Date",
+    222: "Leave Injury Number",
+    223: "Leave Instances Pay Period Number",
+    224: "Leave Leave Period End Date",
+    225: "Leave Leave Period Start Date",
+    226: "Leave Lump Sum Hourly Rate Payment Starting Date",
+    227: "Leave Lump Sum Paid Hours",
+    228: "Leave Lump Sum Payment Period Projected Ending Date",
+    229: "Leave Lump Sum Payment Refund Amount",
+    230: "Leave Lump Sum Period Ending Date",
+    231: "Leave Lump Sum Period Starting Date",
+    232: "Leave Lump Sum Recredited Hours",
+    233: "Leave Lump Sum Unexpired Hours",
+    234: "Leave Non-Expiring Pay Period Balance Hours",
+    235: "Leave Non-Expiring Pay Period Used Hours",
+    236: "Leave Paid Hours",
+    237: "Leave Pay Period Accrued Hours",
+    238: "Leave Pay Period Balance Hours",
+    239: "Leave Pay Period Beginning Balance Hours",
+    240: "Leave Pay Period Carryover Hours",
+    241: "Leave Pay Period Earned Hours",
+    242: "Leave Pay Period Ending Balance Hours",
+    243: "Leave Pay Period Hours",
+    244: "Leave Pay Period Used Hours",
+    245: "Leave Payment Refund Amount",
+    246: "Leave Personal Ceiling Hours Reason Text",
+    247: "Leave Prior Year Balance Hours",
+    248: "Leave Reason Text",
+    249: "Leave Recipient Approval Date",
+    250: "Leave Service Computation Date",
+    251: "Leave Set Aside Hours",
+    252: "Leave Starting Date",
+    253: "Leave Taken Day Hours",
+    254: "Leave Total Abeyance Hours Balance",
+    255: "Leave Total Accrued Hours YTD",
+    256: "Leave Total Advance Balance Hours YTD",
+    257: "Leave Total Amount Balance",
+    258: "Leave Total Balance Hours Fiscal YTD",
+    259: "Leave Total Carryover Hours",
+    260: "Leave Total Current Balance Hours YTD",
+    261: "Leave Total Earned Hours",
+    262: "Leave Total Earned Hours YTD",
+    263: "Leave Total History Hours",
+    264: "Leave Total Hours",
+    265: "Leave Total Hours by Employee",
+    266: "Leave Total Hours by Recipient",
+    267: "Leave Total Hours Current Balance",
+    268: "Leave Total Hours Ending Balance",
+    269: "Leave Total Hours Prior Year Balance",
+    270: "Leave Total Hours YTD",
+    271: "Leave Total Hours YTD Balance",
+    272: "Leave Total Leave Year Hours",
+    273: "Leave Total Paid Hours",
+    274: "Leave Total Pay Period Accrued Hours",
+    275: "Leave Total Pay Period Carryover Hours",
+    276: "Leave Total Pay Period Earned Hours",
+    277: "Leave Total Pay Period Hours",
+    278: "Leave Total Pay Period Hours Balance",
+    279: "Leave Total Pay Period Hours Beginning Balance",
+    280: "Leave Total Pay Period Hours Ending Balance",
+    281: "Leave Total Pay Period Hours Remaining Balance",
+    282: "Leave Total Pay Period Used Hours",
+    283: "Leave Total Recredited Hours",
+    284: "Leave Total Set Aside Amount",
+    285: "Leave Total Unused Hours Balance",
+    286: "Leave Total Use-Lose Amount",
+    287: "Leave Total Used Hours",
+    288: "Leave Total Used Hours Current",
+    289: "Leave Total Used Hours YTD",
+    290: "Leave Total Year Carryover Hours",
+    291: "Leave Total Year Hours",
+    292: "Leave Total Year Hours Beginning Balance",
+    293: "Leave Total Year Projected Hours Ending Balance",
+    294: "Leave Unused Hours",
+    295: "Leave Usage Period Ending Date",
+    296: "Leave Usage Period Starting Date",
+    297: "Leave Use-Lose Amount",
+    298: "Leave Use-Lose Date",
+    299: "Leave Used Hours",
+    300: "Leave Used Pay Period Hours",
+    301: "Leave Used YTD Hours",
+    302: "Leave Year 1 Pay Period Balance Hours",
+    303: "Leave Year 1 Total Used Hours",
+    304: "Leave Year 2 Pay Period Balance Hours",
+    305: "Leave Year 2 Pay Period Used Hours",
+    306: "Leave Year 3 Pay Period Hours",
+    307: "Leave Year 3 Pay Period Used Hours",
+    308: "Leave Year Beginning Balance Hours",
+    309: "Leave Year Carryover Hours",
+    310: "Leave Year End Date",
+    311: "Leave Year Hours",
+    312: "Leave Year Projected Ending Balance Hours",
+    313: "Leave Year Total Date End",
+    314: "Leave YTD Balance Hours",
+    315: "Leave YTD Earned Hours",
+    316: "Leave YTD Hours",
+    317: "Leave YTD Used Hours",
+    318: "Life Insurance Benefits Accidental Death and Dismemberment Coverage Amount",
+    319: "Life Insurance Benefits Assignment Indicator",
+    320: "Life Insurance Benefits Child Coverage Amount",
+    321: "Life Insurance Benefits Conversion Notification Date",
+    322: "Life Insurance Benefits Court Ordered Indicator",
+    323: "Life Insurance Benefits Coverage Amount",
+    324: "Life Insurance Benefits Coverage Code",
+    325: "Life Insurance Benefits Coverage Indicator",
+    326: "Life Insurance Benefits Effective Date",
+    327: "Life Insurance Benefits Election Date",
+    328: "Life Insurance Benefits Election Notification Date",
+    329: "Life Insurance Benefits Government Contribution Premium Pay Period Amount",
+    330: "Life Insurance Benefits Higher Calculated Rate Indicator",
+    331: "Life Insurance Benefits Life Event Code",
+    332: "Life Insurance Benefits Life Event Date",
+    333: "Life Insurance Benefits Multiples Number",
+    334: "Life Insurance Benefits Pay Period Amount",
+    335: "Life Insurance Benefits Plan Code",
+    336: "Life Insurance Benefits Post Living Benefit Election Amount",
+    337: "Life Insurance Benefits Premium Pay Period Amount",
+    338: "Life Insurance Benefits Reduction Form Date",
+    339: "Life Insurance Benefits Reduction Form Indicator",
+    340: "Life Insurance Benefits Regular Coverage Amount",
+    341: "Life Insurance Benefits Spouse Coverage Amount",
+    342: "Life Insurance Benefits Total Adjusted Amount",
+    343: "Life Insurance Benefits Total Amount",
+    344: "Life Insurance Benefits Total Amount Current",
+    345: "Life Insurance Benefits Total Amount YTD",
+    346: "Life Insurance Benefits YTD Amount",
+    347: "Life Insurance Extra Benefits Amount",
+    348: "Location Duty Station Code",
+    349: "Military Service Deposit Amount",
+    350: "Military Service Deposit Pay Period Amount",
+    351: "Military Service Deposit Total Amount",
+    352: "Military Service Deposit Total Amount Current",
+    353: "Military Service Deposit Total Amount YTD",
+    354: "Military Service Deposit YTD Amount",
+    355: "Military Service Reduction in Force Veterans Preference Indicator",
+    356: "Military Service Start Date",
+    357: "Military Service Total Months Number",
+    358: "Military Service Total Years and Months",
+    359: "Military Service Tour of Duty Text",
+    360: "Military Service Veteran Status Code",
+    361: "Military Service Veteran Status Code",
+    362: "Military Service Veterans Preference Code",
+    363: "Military Service Veterans Preference Code",
+    364: "Occupational Category Code",
+    365: "Occupational Series Text",
+    366: "Organization Agency / Subelement Code",
+    367: "Organization Agency / Subelement Indicator",
+    368: "Organization Component Text",
+    369: "Organization Hierarchy Text",
+    370: "Organization Identification Code",
+    371: "Organization Name Text",
+    372: "Organization Pay Period Amount",
+    373: "Organization Title Text",
+    374: "Organization Total Amount Current",
+    375: "Organization Total Amount YTD",
+    376: "Organization Type Code",
+    377: "Organization YTD Amount",
+    378: "Overseas Allotment Pay Period Amount",
+    379: "Overseas Allotment Total Amount Current",
+    380: "Overseas Allotment Total Amount YTD",
+    381: "Overseas Allotment YTD Amount",
+    382: "Paid Non-Overtime Work Schedule Pay Period Hours",
+    383: "Pay Adjustment Amount",
+    384: "Pay Allocated Tips Amount",
+    385: "Pay Annualized Rate Amount",
+    386: "Pay Area Code",
+    387: "Pay As of Date",
+    388: "Pay Basis Code",
+    389: "Pay Basis Text",
+    390: "Pay Current Pay Period Amount",
+    391: "Pay Current Total Pay Period Amount",
+    392: "Pay Disbursing Date",
+    393: "Pay Governmental Salary Amount",
+    394: "Pay Hourly Rate Adjusted Amount",
+    395: "Pay Hourly Rate Amount",
+    396: "Pay Leave Year Hours",
+    397: "Pay Level Indicator",
+    398: "Pay Locality Adjustment Amount",
+    399: "Pay Locality Percent",
+    400: "Pay Pay Period Adjusted Hours",
+    401: "Pay Pay Period Amount",
+    402: "Pay Pay Period Ending Date",
+    403: "Pay Pay Period Hours",
+    404: "Pay Pay Period Number",
+    405: "Pay Pay Period Starting Date",
+    406: "Pay Period Amount",
+    407: "Pay Period Ending Date",
+    408: "Pay Period Hours",
+    409: "Pay Period Number",
+    410: "Pay Period Starting Date",
+    411: "Pay Plan Code",
+    412: "Pay Plan/Grade Text",
+    413: "Pay Rate Amount",
+    414: "Pay Rate Determinant Code",
+    415: "Pay Rate Indicator",
+    416: "Pay Salary Amount",
+    417: "Pay Salary Rate Amount",
+    418: "Pay Shift Code",
+    419: "Pay Status Text",
+    420: "Pay Sunday Indicator",
+    421: "Pay Supplement Amount",
+    422: "Pay Supplement Amount YTD",
+    423: "Pay Supplement Pay Period Amount",
+    424: "Pay Supplement YTD Amount",
+    425: "Pay Table Identifier",
+    426: "Pay Table Identifier Text",
+    427: "Pay Total Adjusted Amount",
+    428: "Pay Total Adjusted Amount YTD",
+    429: "Pay Total Amount",
+    430: "Pay Total Amount Current",
+    431: "Pay Total Amount YTD",
+    432: "Pay Total Biweekly Pay Period Hours",
+    433: "Pay Total Days",
+    434: "Pay Total Hours",
+    435: "Pay Total Leave Year Hours",
+    436: "Pay Total Pay Period Adjusted Hours",
+    437: "Pay Total Pay Period Amount",
+    438: "Pay Total Pay Period Hours",
+    439: "Pay Total Pay Period Worked Hours",
+    440: "Pay Total Percent",
+    441: "Pay Total Salary Rate Amount",
+    442: "Pay Type Code",
+    443: "Pay Type Text",
+    444: "Pay Wages, Tips, etc. Amount",
+    445: "Pay Wages, Tips, Other Compensation Amount",
+    446: "Pay Weeks Number",
+    447: "Pay YTD Amount",
+    448: "Payroll Line of Accounting Number",
+    449: "Person Birth Date",
+    450: "Person Disability Code",
+    451: "Person Ethnicity and Race Identification Code",
+    452: "Person Family Name Text",
+    453: "Person First Name and Initial Text",
+    454: "Person FLSA Category Code",
+    455: "Person Full Name Text",
+    456: "Person Given Name Text",
+    457: "Person Identification Number",
+    458: "Person Middle Name Text",
+    459: "Person Race or National Origin Code",
+    460: "Person Sex Code",
+    461: "Person Statutory Indicator",
+    462: "Person Suffix Name Text",
+    463: "Personnel Action Authorizer Title Text",
+    464: "Personnel Action Data Text",
+    465: "Personnel Action Death of Employee Identifier",
+    466: "Personnel Action Effective Date",
+    467: "Personnel Action Ending Date",
+    468: "Personnel Action Legal Authority Text",
+    469: "Personnel Action Nature of Action Code",
+    470: "Personnel Action Start Date",
+    471: "Position Grade, Level, Class, Rank, or Pay Band Code",
+    472: "Position Management Alternate Work Schedule Code",
+    473: "Position Management Annuitant Code",
+    474: "Position Management Appriopriate Code",
+    475: "Position Management Appropriation Code",
+    476: "Position Management Bargaining Unit Text",
+    477: "Position Management Functional Classification Code",
+    478: "Position Management Grade Code",
+    479: "Position Management Grade, Level, Class, Rank, or Pay Band Code",
+    480: "Position Management Grade/Band Code",
+    481: "Position Management Occupation Series Text",
+    482: "Position Management Occupational Category Code",
+    483: "Position Management Occupational Series Text",
+    484: "Position Management Occupied Position Code",
+    485: "Position Management Organization Code",
+    486: "Position Management Organizational Code",
+    487: "Position Management Position Title Description Text",
+    488: "Position Management Service Computation Date",
+    489: "Position Management Start Date",
+    490: "Position Management Status Text",
+    491: "Position Management Step Code",
+    492: "Position Management Step or Rate Code",
+    493: "Position Management Supervisory Status Code",
+    494: "Position Management Tenure Code",
+    495: "Position Management Type Code",
+    496: "Position Management Weeks Worked Number",
+    497: "Position Management Work Schedule Code",
+    498: "Position Official Title",
+    499: "Position Service Designator",
+    500: "Remarks Detail Text",
+    501: "Repayment Total Amount YTD",
+    502: "Repayment YTD Amount",
+    503: "Reporting Period Date",
+    504: "Retained Grade Code",
+    505: "Retained Step Code",
+    506: "Retirement Annuity Pay Period Amount",
+    507: "Retirement Coverage Determination Indicator",
+    508: "Retirement Creditable Earnings Pay Period Amount",
+    509: "Retirement Creditable Earnings YTD Amount",
+    510: "Retirement Cumulative Salary Deduction Amount",
+    511: "Retirement Deduction Percent",
+    512: "Retirement Government Contribution Pay Period Amount",
+    513: "Retirement Government Contribution YTD Amount",
+    514: "Retirement Plan Code",
+    515: "Retirement Plan Description Text",
+    516: "Retirement Plan Indicator",
+    517: "Retirement Prior Coverage Code",
+    518: "Retirement Salary Deduction Pay Period Amount",
+    519: "Retirement Salary Deduction YTD Amount",
+    520: "Retirement Service Computation Date",
+    521: "Retirement Total Amount",
+    522: "Salary Total Amount YTD",
+    523: "Salary YTD Amount",
+    524: "Security Verification Code",
+    525: "Separation Date Date",
+    526: "Service Computation Date for Reduction in Force Purposes",
+    527: "Social Security Insurance Benefits Adjusted Amount",
+    528: "Social Security Insurance Benefits Amount",
+    529: "Social Security Insurance Benefits Pay Period Amount",
+    530: "Social Security Insurance Benefits Percent",
+    531: "Social Security Insurance Benefits Total Adjusted Amount",
+    532: "Social Security Insurance Benefits Total Amount",
+    533: "Social Security Insurance Benefits Total Amount Current",
+    534: "Social Security Insurance Benefits Total Amount YTD",
+    535: "Social Security Insurance Benefits Total Percent",
+    536: "Social Security Insurance Benefits YTD Amount",
+    537: "Step or Rate Code",
+    538: "Subsistence Pay Period Amount",
+    539: "Subsistence Total Amount Current",
+    540: "Subsistence Total Amount YTD",
+    541: "Subsistence YTD Amount",
+    542: "Supervisory Status Code",
+    543: "Supplemental Data Text",
+    544: "Supplemental Optional Code",
+    545: "Tax Additional Amount",
+    546: "Tax Additional Pay Period Amount",
+    547: "Tax Additional Total Amount",
+    548: "Tax Additional Total Amount Current",
+    549: "Tax Additional Total Amount YTD",
+    550: "Tax Additional YTD Amount",
+    551: "Tax Adjusted Amount",
+    552: "Tax Authority Code",
+    553: "Tax Entity Code",
+    554: "Tax Exemptions Number",
+    555: "Tax Identification Number",
+    556: "Tax Jurisdiction Code",
+    557: "Tax Marital Status Code",
+    558: "Tax Pay Period Amount",
+    559: "Tax Report Year",
+    560: "Tax Tips Amount",
+    561: "Tax Total Adjusted Amount",
+    562: "Tax Total Amount",
+    563: "Tax Total Amount Current",
+    564: "Tax Total Amount YTD",
+    565: "Tax Type Code",
+    566: "Tax Wages Amount",
+    567: "Tax Wages Amount Current",
+    568: "Tax Wages Amount YTD",
+    569: "Tax Wages Pay Period Amount",
+    570: "Tax Wages YTD Amount",
+    571: "Tax Withheld Amount",
+    572: "Tax Withholding Indicator",
+    573: "Tax YTD Amount",
+    574: "Time & Attendance Override Code",
+    575: "Time Calendar Date",
+    576: "Tour of Duty Pay Period Hours",
+    577: "Tour of Duty Total Hours",
+    578: "Tour of Duty Total Pay Period Hours",
+    579: "Transmission Control Number",
+    580: "Transmission Record Action Code",
+    581: "Transmission Record Identifier",
+    582: "Transmission Records Number",
+    583: "Transmission Resubmission Indicator",
+    584: "Transmission Resubmission Wage Identifier",
+    585: "Transmission Void Indicator",
+    586: "Veterans Preference Indicator for Reduction in Force",
+    587: "Wage Garnishment Arrearage Pay Period Amount",
+    588: "Wage Garnishment Arrearage Total Amount Current",
+    589: "Wage Garnishment Arrearage Total Amount YTD",
+    590: "Wage Garnishment Arrearage YTD Amount",
+    591: "Wage Garnishment Pay Period Amount",
+    592: "Wage Garnishment Processing Fee Pay Period Amount",
+    593: "Wage Garnishment Processing Fee Total Amount Current",
+    594: "Wage Garnishment Processing Fee Total Amount YTD",
+    595: "Wage Garnishment Processing Fee YTD Amount",
+    596: "Wage Garnishment Total Amount Current",
+    597: "Wage Garnishment Total Amount YTD",
+    598: "Wage Garnishment YTD Amount",
+    599: "Work Life Benefits Pay Period Amount",
+    600: "Work Life Benefits Total Amount",
+    601: "Work Life Benefits Total Amount Current",
+    602: "Work Life Benefits Total Amount YTD",
+    603: "Work Life Benefits YTD Amount",
+    604: "Work Schedule Action Code",
+    605: "Work Schedule Action Indicator",
+    606: "Work Schedule Activity Code",
+    607: "Work Schedule Activity Indicator",
+    608: "Work Schedule Adjustment Date",
+    609: "Work Schedule Assigned Hours",
+    610: "Work Schedule Certification Date",
+    611: "Work Schedule Certification Indicator",
+    612: "Work Schedule Certification Time",
+    613: "Work Schedule Code",
+    614: "Work Schedule Destination Code",
+    615: "Work Schedule Display Hours",
+    616: "Work Schedule Effective Date",
+    617: "Work Schedule Environmental Hazard Code",
+    618: "Work Schedule Exception Code",
+    619: "Work Schedule Group Code",
+    620: "Work Schedule Hours Number",
+    621: "Work Schedule Hours Type Code",
+    622: "Work Schedule Increase Hours",
+    623: "Work Schedule Input Indicator",
+    624: "Work Schedule Minutes Number",
+    625: "Work Schedule Overtime Balance Hours",
+    626: "Work Schedule Overtime Pay Period Earned Hours",
+    627: "Work Schedule Overtime Pay Period Used Hours",
+    628: "Work Schedule Pay Period Balance Hours",
+    629: "Work Schedule Pay Period Date",
+    630: "Work Schedule Pay Period Earned Hours",
+    631: "Work Schedule Pay Period Hours",
+    632: "Work Schedule Pay Period Used Hours",
+    633: "Work Schedule Rotation Code",
+    634: "Work Schedule Rotation Indicator",
+    635: "Work Schedule Shift Code",
+    636: "Work Schedule Shift Indicator",
+    637: "Work Schedule Status Code",
+    638: "Work Schedule Status Indicator",
+    639: "Work Schedule Text",
+    640: "Work Schedule Total Hours",
+    641: "Work Schedule Tour End Time",
+    642: "Work Schedule Tour Start Time",
+    643: "Work Schedule Week Code",
+    644: "Work Schedule Week Day Code",
+    645: "Work Schedule Worked Date",
+    646: "Worked Pay Pay Period Hours"
+};
+
+var myjson = JSON.stringify(obj);
+root = JSON.parse(myjson);
+
+var root = d3.hierarchy(root)
+    .sum(function(d) { return d.size; })
+    .sort(function(a, b) { return b.value - a.value; });
+
+var focus = root,
+    nodes = pack(root).descendants(),
+    view;
+
+var circle = g.selectAll("circle")
+    .data(nodes)
+    .enter().append("circle")
+    .attr("class", function(d) { return d.parent ? d.children ? "node" : "node node--leaf" : "node node--root"; })
+    .attr("uniqueID", function(d) { return d.data.uniqueID; })
+    .attr("visualName", function(d) { return d.data.visualName; })
+    .style("fill", function(d) { return d.children ? color(d.depth) : null; })
+    .on("click", function(d) { if (focus !== d) zoom(d), d3.event.stopPropagation(); });
+
+
+var text = g.selectAll("text")
+    .data(nodes)
+    .enter().append("text")
+    .attr("class", "label hide")
+    .attr("onmouseover", "labelHoverOn(this)")
+    .attr("onmouseout", "labelHoverOff(this)")
+    .style("fill-opacity", function(d) { return d.parent === root ? 1 : 0; })
+    .style("display", function(d) { return d.parent === root ? "inline" : "none"; })
+    .text(function(d) { return d.data.name; })
+    .call(wrap, 25)
+
+
+var node = g.selectAll("circle,text");
+
+
+svg.style("background", color(-1)).on("click", function() { zoom(root); });
+
+zoomTo([root.x, root.y, root.r * 2 + margin]);
+
+function showID() {
+    // At the element level
+    var ele = document.getElementsByClassName("label hide");
+    for (var i = 0; i < ele.length; i++) {
+
+        var x_coordinate = Math.abs(parseFloat(ele[i].getAttribute("transform").split("(")[1].split(",")[0]));
+        var y_coordinate = Math.abs(parseFloat(ele[i].getAttribute("transform").split("(")[1].split(",")[1]));
+
+        if (x_coordinate < 1 && y_coordinate < 1) {
+
+            ele[i].setAttribute("style", "fill-opacity: 1; display: inline; font-size: 32px;")
+            window.parent.postMessage(ele[i].innerHTML, "*");
+        }
+    }
+}
+
+
+function zoom(d) {
+    var focus0 = focus;
+    focus = d;
+    try {
+        var levelChecker = focus.data.children[0].size;
+    } catch (err) {
+        var levelChecker = "elementLevel";
+    }
+
+    var legendTitle = focus.data.legendName;
+    var myObj = focus.data;
+
+    window.parent.postMessage(myObj, "*");
+    window.parent.postMessage(legendTitle, "*");
+
+
+    if (levelChecker != null) {
+        // At the object class level
+        var ele = document.getElementsByClassName("node node--leaf");
+        for (var i = 0; i < ele.length; i++) {
+            // Line below enables clicking on leaf nodes
+            // ele[i].style.pointerEvents = "auto";
+        }
+    }
+    if (levelChecker == "elementLevel") {
+        window.setTimeout(showID, 1000);
+    }
+
+
+    var transition = d3.transition()
+        .duration(d3.event.altKey ? 7500 : 750)
+        .tween("zoom", function(d) {
+            var i = d3.interpolateZoom(view, [focus.x, focus.y, focus.r * 2 + margin]);
+            return function(t) { zoomTo(i(t)); };
+        });
+
+    transition.selectAll("text")
+        .filter(function(d) { return d.parent === focus || this.style.display === "inline"; })
+        .style("fill-opacity", function(d) { return d.parent === focus ? 1 : 0; })
+        .on("start", function(d) { if (d.parent === focus) this.style.display = "inline"; })
+        .on("end", function(d) { if (d.parent !== focus) this.style.display = "none"; });
+}
+
+function zoomTo(v) {
+    var k = diameter / v[2];
+    view = v;
+    node.attr("transform", function(d) { return "translate(" + (d.x - v[0]) * k + "," + (d.y - v[1]) * k + ")"; });
+    circle.attr("r", function(d) { return d.r * k; });
+}
+
+
+// The function for when the user hovers over the text label
+function labelHoverOn(x) {
+    var originalName = x.children[0].innerHTML
+    if (originalName.substring(0, 3) == "ID:") {
+        var idNumber = originalName.slice(3);
+        x.setAttribute("originalName", originalName);
+        x.setAttribute("class", "label");
+        x.children[0].innerHTML = objectClassData[idNumber];
+        x.style.fontSize = "20px";
+        $(".label.hide").attr("opacity", "0");
+    } else {
+        x.setAttribute("class", "label");
+        x.style.fontSize = "20px";
+        $(".label.hide").attr("opacity", "0");
+    }
+}
+
+// The function for when the user hovers off of the text label
+function labelHoverOff(x) {
+    var originalName = x.getAttribute("originalName");
+    if (originalName != null) {
+        $(".label").attr("opacity", "1");
+        x.setAttribute("class", "label hide");
+        x.children[0].innerHTML = originalName;
+        x.style.fontSize = "16px";
+    } else {
+        $(".label").attr("opacity", "1");
+        x.setAttribute("class", "label hide");
+        x.style.fontSize = "16px";
+    }
+}
+
+// Function for wrapping text in the circles
+function wrap(text, width) {
+    text.each(function() {
+        var text = d3.select(this),
+            words = text.text().split(/\s+/).reverse(),
+            word,
+            line = [],
+            lineNumber = 0,
+            lineHeight = 1, // ems
+            y = 0,
+            dy = 0;
+        tspan = text.text(null)
+            .append("tspan")
+            .attr("x", 0)
+            .attr("y", y)
+            .attr("dy", dy + "em");
+        while (word = words.pop()) {
+            line.push(word);
+            tspan.text(line.join(" "));
+            if (tspan.node().innerHTML.length > width) {
+                line.pop();
+                tspan.text(line.join(" "));
+                line = [word];
+                tspan = text.append("tspan")
+                    .attr("x", 0)
+                    .attr("y", y)
+                    .attr("dy", ++lineNumber * lineHeight + dy + "em")
+                    .text(word);
+            }
+        }
+    });
+}
+
+var elem;
+// Function that will activate elements selected
+function activateLeaf(x) {
+    try {
+        elem.setAttribute("style", "fill:darkgray");
+        elem.removeAttribute("stroke");
+        elem.removeAttribute("stroke-width");
+    } catch (err) {
+        // pass on the first time activated
+    }
+    var clicks = document.getElementsByTagName("circle");
+    for (var i = 0; i < clicks.length; i++) {
+        elem = clicks[i];
+        attrID = elem.getAttribute("uniqueID");
+        if (attrID == x) {
+            elem.setAttribute("style", "fill: lightgray;");
+            elem.setAttribute("stroke", "black");
+            elem.setAttribute("stroke-width", "3.5px");
+            break;
+        }
+    }
+}
+
+// Function for deactivating all activated element circles when leaving
+// the object class level or for when the bottom iframe is closed
+function deactivateAll() {
+    var clicks = document.getElementsByTagName("circle");
+    var attrString = "fill: lightgray;";
+
+    for (var i = 0; i < clicks.length; i++) {
+        elem = clicks[i];
+        attrID = elem.getAttribute("style");
+
+        if (attrID == attrString) {
+            elem.setAttribute("style", "fill: darkgray;");
+            elem.removeAttribute("stroke");
+            elem.removeAttribute("stroke-width");
+        }
+    }
+}
+
+// Function for simulating a click on the circle diagram
+function simulateClick(elem /* Must be the element, not d3 selection */ ) {
+    var evt = document.createEvent("MouseEvents");
+    evt.initMouseEvent(
+        "click", /* type */
+        true, /* canBubble */
+        true, /* cancelable */
+        window, /* view */
+        0, /* detail */
+        0, /* screenX */
+        0, /* screenY */
+        0, /* clientX */
+        0, /* clientY */
+        false, /* ctrlKey */
+        false, /* altKey */
+        false, /* shiftKey */
+        false, /* metaKey */
+        0, /* button */
+        null); /* relatedTarget */
+    elem.dispatchEvent(evt);
+}
+// Click the top level circle to enable the onclick function
+// that allows the user to click on the names on the right to navigate
+simulateClick($("circle.node")[0]);
+
+// Here "addEventListener" is for standards-compliant web browsers and "attachEvent" is for IE Browsers.
+var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
+var eventer = window[eventMethod];
+
+var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
+
+// Listen to message from child IFrame window
+eventer(messageEvent, function(e) {
+
+    // Activate the circles that are being clicked
+    if (typeof(e.data) == "number") {
+        var uniqueID = e.data;
+        activateLeaf(uniqueID);
+    }
+    // Remove any activated element circles if clicked out of
+    // element view
+    else if (typeof(e.data) == "string" && e.data == "Deactivate all elements") {
+        deactivateAll();
+    }
+    // Data that is going to select the circle from what
+    // the user selected on the right frame
+    else if (typeof(e.data) == "object" && e.data[0] == "Select") {
+        var circles = document.getElementsByTagName("circle");
+        for (var i in circles) {
+            var c = circles[i];
+            var id = c.getAttribute("uniqueID");
+            if (id == e.data[1]) {
+                simulateClick(c);
+                c.removeAttribute("stroke", "black");
+                c.removeAttribute("stroke-width", "1.5px");
+                break;
+            }
+        }
+    }
+    // Data that is going to select the circle from what
+    // the user selected on the right frame from the breadcrumb
+    else if (typeof(e.data) == "object" && e.data[0] == "CrumbSelect") {
+        var circles = document.getElementsByTagName("circle");
+        // If the "Law" breadcrumb is clicked; return to 
+        // home view
+        if (e.data[1] == "") {
+            simulateClick($("circle.node")[0]);
+        } else if (e.data[1] != "") {
+            for (var i in circles) {
+                var c = circles[i];
+                var name = c.getAttribute("visualName").trim();
+                if (name == e.data[1]) {
+                    simulateClick(c);
+                    break;
+                }
+            }
+        }
+    }
+    // Data that is going to select the circle that is going to be
+    // signaled when the user hovers over the words on the right frame
+    else if (typeof(e.data) == "object" && e.data[0] == "Hover") {
+        var circles = document.getElementsByTagName("circle");
+        // If the "Law" breadcrumb is clicked; return to 
+        // home view
+        if (e.data[1] == "On") {
+            for (var i in circles) {
+                var c = circles[i];
+                var id = c.getAttribute("uniqueID");
+                if (id == e.data[2]) {
+                    c.setAttribute("stroke", "black");
+                    c.setAttribute("stroke-width", "1.5px");
+                    break;
+                }
+            }
+        } else if (e.data[1] == "Off") {
+            for (var i in circles) {
+                var c = circles[i];
+                var id = c.getAttribute("uniqueID");
+                if (id == e.data[2]) {
+                    c.removeAttribute("stroke", "black");
+                    c.removeAttribute("stroke-width", "1.5px");
+                    break;
+                }
+            }
+
+        }
+    }
+
+}, false);
+</script>

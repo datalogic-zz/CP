@@ -1,0 +1,151 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<style>
+#cirlce {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    border-radius: 10px;
+}
+
+#iframeTable {
+    position: absolute;
+    left: 810px;
+    top: 0px;
+    transition-duration: 0.5s;
+    border-bottom: double;
+    border-left: none;
+    border-right: none;
+    border-top: none;
+}
+
+#iframeTable2 {
+    position: absolute;
+    left: 810px;
+    top: 460px;
+    transition-duration: 0.5s;
+    /*border-radius: 15px;*/
+    border: none;
+}
+</style>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>NewPay COVID-19 Analysis</title>
+    <link rel="icon" href="dist/iframe logo.png">
+</head>
+
+<body>
+    <iframe id="circle" style="height: 1000px; width: 850px; border: none" src="dist/Circle Pack - BRM.html"></iframe>
+    <iframe id="iframeTable" style="height: 800px; width: 650px; border: none;" src="dist/Meta Table.html"></iframe>
+    <iframe id="iframeTable2" style="height: 0px; width: 650px; border: none;" src="dist/Element Frame.html">
+    </iframe>
+</body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+<script language="javascript">
+// Here "addEventListener" is for standards-compliant web browsers and "attachEvent" is for IE Browsers.
+var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
+var eventer = window[eventMethod];
+
+var circleFrame = document.getElementById("circle");
+var iframe1 = document.getElementById("iframeTable");
+var iframe2 = document.getElementById("iframeTable2");
+
+var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
+
+// Listen to message from child IFrame window
+eventer(messageEvent, function(e) {
+    var array = e.data.children;
+    var postData = e.data["post"];
+
+    // Data passed here is for the listing
+    if (Array.isArray(array) == true) {
+        // Send signal to change the position style of the titlebar
+        // in the element iframe
+        iframe2.contentWindow.postMessage("Change position style", "*");
+
+        // Remove the transition delay from the iframe's style attribute
+        iframe1.setAttribute("style", "height: 425px; width: 650px; transition-duration: 0s;")
+        iframe2.setAttribute("style", "height: 345px; width: 650px; transition-duration: 0s;")
+
+        // Change the sizes of the iframes
+        iframe1.setAttribute("style", "height: 800px; width: 650px; border: none; transition-duration: 0s;");
+        iframe2.setAttribute("style", "height: 0px; width: 650px; border: none; transition-duration: 0s;");
+
+        // Add the delay back to the iframe's style attribute
+        setTimeout(function() {
+            iframe1.setAttribute("style", "height: 800px; width: 650px; border: none;");
+            iframe2.setAttribute("style", "height: 0px; width: 650px; border: none;");
+            // Send message that contains the array of elements to be listed
+            iframe1.contentWindow.postMessage(array, "*");
+        }, 5);
+
+    } // Data passed here is for the legend 
+    else if (typeof(e.data) == "string" && e.data[0] == "H") {
+        circleFrame.contentWindow.postMessage("Deactivate all elements", "*")
+        iframe1.contentWindow.postMessage(e.data, "*");
+    } // Message is activating third iframe
+    else if (typeof(postData) == "string" && postData.includes("minimize")) {
+        makeSmall(postData, e.data);
+    } else if (typeof(e.data) == "string" && e.data.includes("Close iFrame")) {
+        // Send signal to change positioning style for titlebar
+        iframe2.contentWindow.postMessage("Change position style", "*");
+
+        // Make the bottom iframe small
+        iframe2.setAttribute("style", "height: 0px; width: 650px;");
+
+        // Remove the activated element in the circle iframe
+        circleFrame.contentWindow.postMessage("Deactivate all elements", "*");
+
+        // Make the top iframe big after a delay
+        setTimeout(function() {
+            // Make the top iframe big
+            iframe1.setAttribute("style", "height: 800px; width: 650px; border: none;");
+
+            // Remove the border after closing
+            iframe2.setAttribute("style", "height: 0px; width: 650px; border: none;");
+        }, 500);
+
+
+        // Reset clickedLink variable
+        clickedLink = "";
+    }
+    // Used for simulating clicks on the circle pack diagram
+    else if (typeof(e.data) == "object" && e.data[0] == "Select") {
+        circleFrame.contentWindow.postMessage(e.data, "*");
+    }
+    // Used for simulating clicks on the circle pack diagram from the 
+    // breadcrumb navigation bar
+    else if (typeof(e.data) == "object" && e.data[0] == "CrumbSelect") {
+        circleFrame.contentWindow.postMessage(e.data, "*");
+    }
+    // Used for sending the uniqueID for when the user is hovering over the
+    // names on the right side for signaling which circle to point to
+    else if (typeof(e.data) == "object" && e.data[0] == "Hover") {
+        circleFrame.contentWindow.postMessage(e.data, "*");
+    }
+}, false);
+
+// Variable checking if link is clicked twice
+var clickedLink;
+
+// Function to change the size of the top iframe to make it smaller
+function makeSmall(x, elementObj) {
+    var style = iframe1.getAttribute("style");
+    // Make top iframe small
+    iframe1.setAttribute("style", "height: 425px; width: 650px;");
+
+    // Make the bottom iframe big after a delay
+    setTimeout(function() {
+        // Make the bottom iframe big
+        iframe2.setAttribute("style", "height: 345px; width: 650px;");
+    }, 500);
+
+    clickedLink = x;
+
+    iframe2.contentWindow.postMessage(elementObj, "*");
+    circleFrame.contentWindow.postMessage(elementObj["uniqueID"], "*")
+}
+</script>
+
+</html>
